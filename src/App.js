@@ -28,24 +28,39 @@ class App extends Component {
       ],
       tags: [],
       userTags: [],
+      testTags: [],
       tests: [],
+      testInstances: [],
     };
 
     Promise.all(TestPromises).then(
-      tests => this.setState((previousState, currentProps) => {
-        return {
-          ...previousState,
-          tests: pluck(tests, 'default'),
-          testsLoaded: true
-        };
-      })
+      (tests) => {
+        const testInstances = tests.map((testPromise, index) => {
+          const Test = testPromise.default;
+          return (
+            <Test
+              key={index}
+              shouldTestRender={ this.shouldTestRender.bind(this) }
+              onAnswer={ this.recordAnswer.bind(this) }
+              onInitialize={ this.initializeTest.bind(this) }
+            />
+          );
+        });
+
+        this.setState((previousState, currentProps) => {
+          return {
+            ...previousState,
+            tests: pluck(tests, 'default'),
+            testInstances: testInstances,
+            testsLoaded: true
+          };
+        })
+      }
     ).catch(
-      () => this.setState((previousState, currentProps) => {
-        return {
-          ...previousState,
-          testLoadError: true
-        };
-      })
+      () => this.setState((previousState, currentProps) => ({
+        ...previousState,
+        testLoadError: true
+      }))
     );
 
     setTimeout(() => window.da3001 = this.state, 500);
@@ -53,16 +68,33 @@ class App extends Component {
 
   initializeTest(test) {
     pluck(test.getAnswers(), 'tag').map((tagName, index) => {
-      this.createTag(tagName, test.assignGlobalIdToTag.bind(test, index));
+      this.createTag(
+        tagName,
+        globalTagId => {
+          test.assignGlobalIdToTag(index, globalTagId);
+          this.setState((previousState, currentProps) => {
+            return {
+              ...previousState,
+              testTags: [
+                ...previousState.testTags,
+                {
+                  testIndex: previousState.tests.indexOf(test),
+                  tagId: globalTagId
+                }
+              ]
+            }
+          });
+        }
+      )
     });
   }
 
   /* Tags
   ********/
-  createTag(tagName, assignGlobalIdToTag) {
+  createTag(tagName, registerNewTagIdCallback) {
     this.setState((previousState, currentProps) => {
       const globalTagId = Math.max(...pluck(previousState.tags, 'id'), -1)+1;
-      assignGlobalIdToTag(globalTagId);
+      registerNewTagIdCallback(globalTagId);
       return { ...previousState, tags: [...previousState.tags, {
           id: globalTagId,
           name: tagName
@@ -170,13 +202,7 @@ class App extends Component {
 
             <h2>Questions</h2>
             <div className="initializeTests">
-              { this.state.tests.map((Test, index) => (
-                <Test
-                  key={index}
-                  shouldTestRender={ this.shouldTestRender.bind(this) }
-                  onAnswer={ this.recordAnswer.bind(this) }
-                  onInitialize={ this.initializeTest.bind(this) }
-                />)) }
+              { this.state.testInstances }
             </div>
           </div>
         : this.state.testLoadError ?
