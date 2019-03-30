@@ -22,11 +22,13 @@ class App extends Component {
         id: 0
       },
       users: [
-        { id: 0, name: prompt('What is your name?', 'Anonymous') }
+        { id: 0, name: 'Anonymous' } /* prompt('What is your name?', 'Anonymous') */
       ],
       tags: [],
       userTags: []
     };
+
+    setTimeout(() => window.da3001 = this.state, 500);
   }
 
   initializeTest(test) {
@@ -88,6 +90,15 @@ class App extends Component {
     })
   }
 
+  tagsUserHas(user, globalTagIds) {
+    // Todo: Limit number of id checks for privacy
+    const userTags = pluck(user.tags, 'id');
+    return globalTagIds.filter(tagId => userTags.indexOf(tagId) !== -1);
+  }
+  tagsIHave(globalTagIds) {
+    return this.tagsUserHas(this.getMe(), globalTagIds);
+  }
+
   userHasAnyTag(user, globalTagIds) {
     const userTagIds = pluck(user.tags, 'id');
     for (var x=0; x<userTagIds.length; x++) {
@@ -103,7 +114,13 @@ class App extends Component {
   /* Test Helpers
   ***************/
   shouldTestRender(test) {
-    return !this.iHaveAnyTag(pluck(test.getAnswers(), 'globalTagId'));
+    const tagsInTest = pluck(test.getAnswers(), 'globalTagId');
+    const dependsOnTags = test.dependsOnTags();
+    return (
+      test.shouldTestRender(this.tagsIHave(dependsOnTags)) &&
+      !this.iHaveAnyTag(tagsInTest) &&
+      true
+    );
   }
 
   recordAnswer(answer) {

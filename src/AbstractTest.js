@@ -28,6 +28,14 @@ class AbstractTest extends Component {
 		this.props.onAnswer(this.getAnswer(answerIndex));
 	}
 
+	dependsOnTags() {
+		return [];
+	}
+
+	shouldTestRender(dependsOnTagsMatches) {
+		return true;
+	}
+
 	render() {
 		return this.props.shouldTestRender(this) ? (
 		  	<div>

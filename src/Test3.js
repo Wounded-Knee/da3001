@@ -12,10 +12,18 @@ const testData = {
 	]
 }
 
-class Test2 extends AbstractTest {
+class Test3 extends AbstractTest {
 	constructor(props) {
 		super({...props, testData: testData});
 	}
+
+	dependsOnTags() {
+		return [11];
+	}
+
+	shouldTestRender(dependsOnTagsMatches) {
+		return dependsOnTagsMatches.length;
+	}
 };
 
-export default Test2;
+export default Test3;

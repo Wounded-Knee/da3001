@@ -8,7 +8,7 @@ const TagList = (props) => {
 	    	{
 	    		props.tags.map((tag) => (
 	    			<li key={ tag.id }>
-	    				{ tag.name }
+	    				{ tag.id }: { tag.name }
 	    			</li>
 	    		))
 	    	}
