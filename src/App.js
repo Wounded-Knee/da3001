@@ -90,6 +90,13 @@ class App extends Component {
     })
   }
 
+  /*
+   * Receives an array of globalTagIds,
+   * removes globalTagIds which the targeted user does not have,
+   * returns the changed array
+   *
+   * Except it does not change the array, it creates a new one.
+   **/
   tagsUserHas(user, globalTagIds) {
     // Todo: Limit number of id checks for privacy
     const userTags = pluck(user.tags, 'id');
@@ -99,18 +106,6 @@ class App extends Component {
     return this.tagsUserHas(this.getMe(), globalTagIds);
   }
 
-  userHasAnyTag(user, globalTagIds) {
-    const userTagIds = pluck(user.tags, 'id');
-    for (var x=0; x<userTagIds.length; x++) {
-      if (globalTagIds.indexOf(userTagIds[x]) !== -1) return true;
-    }
-    return false;
-  }
-
-  iHaveAnyTag(globalTagIds) {
-    return this.userHasAnyTag(this.getMe(), globalTagIds);
-  }
-
   /* Test Helpers
   ***************/
   shouldTestRender(test) {
@@ -118,7 +113,7 @@ class App extends Component {
     const dependsOnTags = test.dependsOnTags();
     return (
       test.shouldTestRender(this.tagsIHave(dependsOnTags)) &&
-      !this.iHaveAnyTag(tagsInTest) &&
+      this.tagsIHave(tagsInTest).length === 0 &&
       true
     );
   }
