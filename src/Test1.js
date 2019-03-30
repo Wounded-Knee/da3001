@@ -1,6 +1,7 @@
 import AbstractTest from './AbstractTest.js';
 
 const testData = {
+	'tagEmoji': '😗',
 	'question': 'When people look at you, how do they react?',
 	'answers': [
 		{ text: 'They smile.', tag: 'Pretty' },
