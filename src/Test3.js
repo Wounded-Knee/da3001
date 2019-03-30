@@ -1,6 +1,7 @@
 import AbstractTest from './AbstractTest.js';
 
 const testData = {
+	'tagEmoji': '🐴',
 	'question': 'Who is your favorite MLP?',
 	'answers': [
 		{ text: 'Twilight Sparkle', tag: 'Twilight Sparkle' },

@@ -1,6 +1,7 @@
 import AbstractTest from './AbstractTest.js';
 
 const testData = {
+	'tagEmoji': '🇺🇸',
 	'question': 'Which US presidential candidate did you vote for?',
 	'answers': [
 		{ text: 'Hillary Clinton', tag: 'HillaryVoter' },
