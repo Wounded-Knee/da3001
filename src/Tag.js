@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Tag = ({tag}) => {
 	return (
-		<li className={ 'tag_' + tag.id }>
+		<li>
 			<Link to={ '/tags/' + tag.id }>{ tag.name }</Link>
 		</li>
 	);

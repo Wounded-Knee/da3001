@@ -229,6 +229,7 @@ class App extends Component {
                       routeProps => <Component
                         {...routeProps}
                         tags={ this.state.tags }
+                        title="Master Tag List"
                         me={ this.getMe() }
                       />
                     }
