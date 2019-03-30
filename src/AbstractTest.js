@@ -4,6 +4,7 @@ class AbstractTest extends Component {
 	constructor(props) {
 		super(props);
 		this.testData = props.testData;
+		this.testData.answers = this.testData.answers.map(answer => ({...answer, tag: (this.testData.tagEmoji || '⚉') + ' ' + answer.tag}));
 		props.onInitialize(this);
 	}
 
