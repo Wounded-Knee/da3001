@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-const pluck = require('utils-pluck');
 
 class AbstractTest extends Component {
 	constructor(props) {
@@ -10,10 +9,6 @@ class AbstractTest extends Component {
 
 	assignGlobalIdToTag(answerIndex, globalTagId) {
 		this.testData.answers[answerIndex].globalTagId = globalTagId;
-	}
-
-	getAllTags() {
-		return pluck(this.testData.answers, 'tag');
 	}
 
 	getQuestion() {
@@ -38,7 +33,7 @@ class AbstractTest extends Component {
 		  	<div>
 			  	{ this.getQuestion() }
 	  			{ this.getAnswers().map((answer, index) => (
-	  				<button key={index} onClick={ this.recordAnswer.bind(this, index) }>{ answer.text } GID: { answer.globalId }</button>
+	  				<button key={index} onClick={ this.recordAnswer.bind(this, index) }>{ answer.text }</button>
 	  			))}
   			</div>
 		) : '';

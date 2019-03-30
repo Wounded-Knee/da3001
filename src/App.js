@@ -16,33 +16,30 @@ const navComponents = [
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       me: {
         id: 0
       },
       users: [
-        { id: 0, name: 'Britta Paemurru' },
+        { id: 0, name: prompt('What is your name?', 'Anonymous') }
       ],
-      tags: [
-        { id: 0, name: 'Fuzzball' },
-        { id: 1, name: 'Cake' },
-      ],
-      userTags: [
-        { userId: 0, tagId: 0 },
-        { userId: 0, tagId: 1 },
-      ]
+      tags: [],
+      userTags: []
     };
   }
 
   initializeTest(test) {
-    test.getAllTags().map((tagName, index) => {
+    pluck(test.getAnswers(), 'tag').map((tagName, index) => {
       this.createTag(tagName, test.assignGlobalIdToTag.bind(test, index));
     });
   }
 
+  /* Tags
+  ********/
   createTag(tagName, assignGlobalIdToTag) {
     this.setState((previousState, currentProps) => {
-      const globalTagId = Math.max(...pluck(previousState.tags, 'id'))+1;
+      const globalTagId = Math.max(...pluck(previousState.tags, 'id'), -1)+1;
       assignGlobalIdToTag(globalTagId);
       return { ...previousState, tags: [...previousState.tags, {
           id: globalTagId,
@@ -52,6 +49,8 @@ class App extends Component {
     });
   }
 
+  /* Users
+  ********/
   getUsers() {
     return this.addTagsToUsers(this.state.users);
   }
@@ -64,6 +63,8 @@ class App extends Component {
     return this.getUserById(this.state.me.id);
   }
 
+  /* User Tags
+  ************/
   addTagsToUsers(users) {
     return users.map((user) => {
       const userTags = this.state.userTags.filter(({ userId, tagId }) => ( userId === user.id ));
@@ -99,6 +100,8 @@ class App extends Component {
     return this.userHasAnyTag(this.getMe(), globalTagIds);
   }
 
+  /* Test Helpers
+  ***************/
   shouldTestRender(test) {
     return !this.iHaveAnyTag(pluck(test.getAnswers(), 'globalTagId'));
   }
@@ -107,6 +110,8 @@ class App extends Component {
     this.giveTagToMe(answer.globalTagId);
   }
 
+  /* Render
+  ********/
   render() {
     const HomeComponent = navComponents[0].Component;
     return (
@@ -130,6 +135,7 @@ class App extends Component {
             })}
           </div>
 
+          <h2>Questions</h2>
           <div className="initializeTests">
             { Tests.map((Test, index) => (
               <Test

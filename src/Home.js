@@ -2,8 +2,8 @@ import React from 'react';
 
 const Home = () => (
   <div>
-    <h2>Home</h2>
-    My Home page!
+    <h2>Paxterra Initiative #1</h2>
+    This is the app. Play with it.
   </div>
 );
 
