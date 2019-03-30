@@ -1,4 +1,5 @@
 import React from 'react';
+import Tag from './Tag.js';
 
 const Profile = (props) => {
 	const userTags = props.me.tags.filter(tag => tag.name.indexOf('undefined') === -1);
@@ -8,14 +9,10 @@ const Profile = (props) => {
 		{ props.me.name }
 
 		<h3>Your Tags:</h3>
-		<ul>
+		<ul className="tagList clearfix">
 			{
 				!userTags.length ? 'None yet... Answer some questions, below.' : userTags.map(tag => {
-					return tag.name.indexOf('undefined') === -1 ? (
-						<li key={ tag.id }>
-							{ tag.name }
-						</li>
-					) : '';
+					return tag.name.indexOf('undefined') === -1 ? <Tag tag={tag} /> : '';
 				})
 			}
 		</ul>

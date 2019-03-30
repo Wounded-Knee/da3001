@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
 import Home from './Home.js';
 import Profile from './Profile.js';
-import Tests from './Tests.js';
+import TestPromises from './TestPromises.js';
 import TagList from './TagList.js';
+import pluck from 'utils-pluck';
 import './App.css';
-const pluck = require('utils-pluck');
 
 const navComponents = [
   { name: 'Home', Component: Home },
@@ -18,6 +18,8 @@ class App extends Component {
     super(props);
 
     this.state = {
+      testsLoaded: false,
+      testLoadError: false,
       me: {
         id: 0
       },
@@ -25,8 +27,26 @@ class App extends Component {
         { id: 0, name: 'Anonymous' } /* prompt('What is your name?', 'Anonymous') */
       ],
       tags: [],
-      userTags: []
+      userTags: [],
+      tests: [],
     };
+
+    Promise.all(TestPromises).then(
+      tests => this.setState((previousState, currentProps) => {
+        return {
+          ...previousState,
+          tests: pluck(tests, 'default'),
+          testsLoaded: true
+        };
+      })
+    ).catch(
+      () => this.setState((previousState, currentProps) => {
+        return {
+          ...previousState,
+          testLoadError: true
+        };
+      })
+    );
 
     setTimeout(() => window.da3001 = this.state, 500);
   }
@@ -128,36 +148,42 @@ class App extends Component {
     const HomeComponent = navComponents[0].Component;
     return (
       <BrowserRouter>
-        <div className="App">
-          <ul>
-            { navComponents.map(({ name }, index) => {
-              return ( <li key={ index }><Link to={ '/' + name }>{ name }</Link></li> );
-            })}
-          </ul>
-          <div className="App-intro">
-            <Route path="/" component={ HomeComponent } />
-            { navComponents.map(({ name, Component }) => {
-              return (
-                <Route
-                  key={ name }
-                  path={ "/" + name }
-                  render={ routeProps => <Component {...routeProps} tags={ this.state.tags } me={ this.getMe() } /> }
-                />
-              );
-            })}
-          </div>
+        { this.state.testsLoaded ?
+          <div className="App">
+            <ul>
+              { navComponents.map(({ name }, index) => {
+                return ( <li key={ index }><Link to={ '/' + name }>{ name }</Link></li> );
+              })}
+            </ul>
+            <div className="App-intro">
+              <Route path="/" component={ HomeComponent } />
+              { navComponents.map(({ name, Component }) => {
+                return (
+                  <Route
+                    key={ name }
+                    path={ "/" + name }
+                    render={ routeProps => <Component {...routeProps} tags={ this.state.tags } me={ this.getMe() } /> }
+                  />
+                );
+              })}
+            </div>
 
-          <h2>Questions</h2>
-          <div className="initializeTests">
-            { Tests.map((Test, index) => (
-              <Test
-                key={index}
-                shouldTestRender={ this.shouldTestRender.bind(this) }
-                onAnswer={ this.recordAnswer.bind(this) }
-                onInitialize={ this.initializeTest.bind(this) }
-              />)) }
+            <h2>Questions</h2>
+            <div className="initializeTests">
+              { this.state.tests.map((Test, index) => (
+                <Test
+                  key={index}
+                  shouldTestRender={ this.shouldTestRender.bind(this) }
+                  onAnswer={ this.recordAnswer.bind(this) }
+                  onInitialize={ this.initializeTest.bind(this) }
+                />)) }
+            </div>
           </div>
-        </div>
+        : this.state.testLoadError ?
+          <div>Error loading tests.</div>
+        : 'Loading...' }
+
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/gjY3LxPNaRM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </BrowserRouter>
     );
   }
