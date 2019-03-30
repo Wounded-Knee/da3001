@@ -4,6 +4,7 @@ import Home from './Home.js';
 import Profile from './Profile.js';
 import TestPromises from './TestPromises.js';
 import TagList from './TagList.js';
+import TagDetail from './TagDetail.js';
 import pluck from 'utils-pluck';
 import './App.css';
 
@@ -63,7 +64,7 @@ class App extends Component {
       }))
     );
 
-    setTimeout(() => window.da3001 = this.state, 500);
+    setTimeout(() => window.da3001 = this, 500);
   }
 
   initializeTest(test) {
@@ -95,12 +96,21 @@ class App extends Component {
     this.setState((previousState, currentProps) => {
       const globalTagId = Math.max(...pluck(previousState.tags, 'id'), -1)+1;
       registerNewTagIdCallback(globalTagId);
-      return { ...previousState, tags: [...previousState.tags, {
-          id: globalTagId,
-          name: tagName
-        }]
+      return {
+        ...previousState,
+        tags: [
+          ...previousState.tags,
+          {
+            id: globalTagId,
+            name: tagName
+          }
+        ]
       };
     });
+  }
+
+  getTagById(globalTagId) {
+    return this.state.tags.filter(tag => tag.id === parseInt(globalTagId))[0];
   }
 
   /* Users
@@ -111,6 +121,10 @@ class App extends Component {
 
   getUserById(id) {
     return this.addTagsToUsers(this.state.users.filter(( user ) => ( user.id === id )))[0];
+  }
+
+  getUsersById(ids) {
+    return this.addTagsToUsers(this.state.users.filter(( user ) => ( ids.indexOf(user.id) !== -1 )));
   }
 
   getMe() {
@@ -158,6 +172,13 @@ class App extends Component {
     return this.tagsUserHas(this.getMe(), globalTagIds);
   }
 
+  usersWhoHaveTag(globalTagId) {
+    const userTags = this.state.userTags.filter(userTag => userTag.tagId === parseInt(globalTagId));
+    const idsOfUsersWhoHaveTheTag = pluck(userTags, 'userId');
+    const usersWhoHaveTag = this.getUsersById(idsOfUsersWhoHaveTheTag);
+    return usersWhoHaveTag;
+  }
+
   /* Test Helpers
   ***************/
   shouldTestRender(test) {
@@ -189,12 +210,28 @@ class App extends Component {
             </ul>
             <div className="App-intro">
               <Route path="/" component={ HomeComponent } />
-              { navComponents.map(({ name, Component }) => {
+              <Route
+                path="/tags/:tagId"
+                render={
+                  routeProps => <TagDetail
+                    {...routeProps}
+                    tag={ this.getTagById(routeProps.match.params.tagId) }
+                    usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
+                  />
+                }
+              />              
+              { navComponents.map(({ name, Component, pathSuffix }) => {
                 return (
                   <Route
                     key={ name }
-                    path={ "/" + name }
-                    render={ routeProps => <Component {...routeProps} tags={ this.state.tags } me={ this.getMe() } /> }
+                    path={ "/" + name + (pathSuffix || '') }
+                    render={
+                      routeProps => <Component
+                        {...routeProps}
+                        tags={ this.state.tags }
+                        me={ this.getMe() }
+                      />
+                    }
                   />
                 );
               })}
@@ -209,7 +246,15 @@ class App extends Component {
           <div>Error loading tests.</div>
         : 'Loading...' }
 
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/gjY3LxPNaRM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe
+          title="video"
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/gjY3LxPNaRM"
+          frameborder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
       </BrowserRouter>
     );
   }
