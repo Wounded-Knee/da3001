@@ -223,6 +223,9 @@ class App extends Component {
   ********/
   render() {
     const HomeComponent = navComponents[0].Component;
+    const youtubeVideos = [
+      'DWO1pkHgrBM', 'gjY3LxPNaRM'
+    ];
     return (
       <BrowserRouter>
         { this.state.testsLoaded ?
@@ -234,7 +237,14 @@ class App extends Component {
             {/* --- Navigation --- */}
             <header>
               { navComponents.map(({ name }, index) => {
-                return ( <button key={ index }><Link to={ '/' + name }>{ name }</Link></button> );
+                return (
+                  <button key={ index } onClick={ (e) => {
+                    var a = e.target.getElementsByTagName('a')[0] || e.target;
+                    a.click();
+                  }}>
+                    <Link to={ '/' + name }>{ name }</Link>
+                  </button>
+                );
               })}
             </header>
 
@@ -261,7 +271,7 @@ class App extends Component {
           title="video"
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/gjY3LxPNaRM"
+          src={ "https://www.youtube.com/embed/" + youtubeVideos[Math.floor(Math.random()*youtubeVideos.length)] }
           frameborder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
