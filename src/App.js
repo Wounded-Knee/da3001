@@ -5,6 +5,7 @@ import Profile from './Profile.js';
 import TestPromises from './TestPromises.js';
 import TagList from './TagList.js';
 import TagDetail from './TagDetail.js';
+import DefaultState from './data/DefaultState.js';
 import pluck from 'utils-pluck';
 import './App.css';
 
@@ -18,53 +19,48 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      testsLoaded: false,
-      testLoadError: false,
-      me: {
-        id: 0
-      },
-      users: [
-        { id: 0, name: 'Anonymous' } /* prompt('What is your name?', 'Anonymous') */
-      ],
-      tags: [],
-      userTags: [],
-      testTags: [],
-      tests: [],
-      testInstances: [],
-    };
+    // Setup state
+    this.state = DefaultState;
 
+    // Handle promises for test module loading
     Promise.all(TestPromises).then(
-      (tests) => {
-        const testInstances = tests.map((testPromise, index) => {
-          const Test = testPromise.default;
-          return (
-            <Test
-              key={index}
-              shouldTestRender={ this.shouldTestRender.bind(this) }
-              onAnswer={ this.recordAnswer.bind(this) }
-              onInitialize={ this.initializeTest.bind(this) }
-            />
-          );
-        });
-
-        this.setState((previousState, currentProps) => {
-          return {
-            ...previousState,
-            tests: pluck(tests, 'default'),
-            testInstances: testInstances,
-            testsLoaded: true
-          };
-        })
-      }
+      this.onImportAllTests.bind(this)
     ).catch(
-      () => this.setState((previousState, currentProps) => ({
-        ...previousState,
-        testLoadError: true
-      }))
+      this.onImportAllTests.bind(this)
     );
 
+    // Scope pointer for debuggery
     setTimeout(() => window.da3001 = this, 500);
+  }
+
+  onImportAllTests(tests) {
+    if (!tests) { // Error
+      this.setState((previousState, currentProps) => ({
+        ...previousState,
+        testLoadError: true
+      }));
+    } else {
+      const testInstances = tests.map((testPromise, index) => {
+        const Test = testPromise.default;
+        return (
+          <Test
+            key={index}
+            shouldTestRender={ this.shouldTestRender.bind(this) }
+            onAnswer={ this.recordAnswer.bind(this) }
+            onInitialize={ this.initializeTest.bind(this) }
+          />
+        );
+      });
+
+      this.setState((previousState, currentProps) => {
+        return {
+          ...previousState,
+          tests: pluck(tests, 'default'),
+          testInstances: testInstances,
+          testsLoaded: true
+        };
+      })
+    }
   }
 
   initializeTest(test) {
@@ -149,10 +145,16 @@ class App extends Component {
 
   giveTagToUser(user, globalTagId) {
     this.setState((previousState, currentProps) => {
-      return { ...previousState, userTags: [...previousState.userTags, {
-        userId: user.id,
-        tagId: globalTagId
-      }]}
+      return {
+        ...previousState,
+        userTags: [
+          ...previousState.userTags,
+          {
+            userId: user.id,
+            tagId: globalTagId
+          }
+        ]
+      }
     })
   }
 
@@ -168,6 +170,7 @@ class App extends Component {
     const userTags = pluck(user.tags, 'id');
     return globalTagIds.filter(tagId => userTags.indexOf(tagId) !== -1);
   }
+
   tagsIHave(globalTagIds) {
     return this.tagsUserHas(this.getMe(), globalTagIds);
   }
@@ -179,7 +182,13 @@ class App extends Component {
     return usersWhoHaveTag;
   }
 
-  /* Test Helpers
+  /* Misc
+  ********/
+  recordAnswer(answer) {
+    this.giveTagToMe(answer.globalTagId);
+  }
+
+  /* Render Helpers
   ***************/
   shouldTestRender(test) {
     const tagsInTest = pluck(test.getAnswers(), 'globalTagId');
@@ -191,60 +200,76 @@ class App extends Component {
     );
   }
 
-  recordAnswer(answer) {
-    this.giveTagToMe(answer.globalTagId);
+  getRoutes() {
+    const HomeComponent = navComponents[0].Component;
+    return (
+      <div className="App-intro">
+
+        {/* --- Home --- */}
+        <Route path="/" component={ HomeComponent } />
+
+        {/* --- Tag Detail View --- */}
+        <Route
+          path="/tags/:tagId"
+          render={
+            routeProps => <TagDetail
+              {...routeProps}
+              tag={ this.getTagById(routeProps.match.params.tagId) }
+              usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
+            />
+          }
+        />
+
+        {/* --- Regular Routes --- */}
+        { navComponents.map(({ name, Component, pathSuffix }) => {
+          return (
+            <Route
+              key={ name }
+              path={ "/" + name + (pathSuffix || '') }
+              render={
+                routeProps => <Component
+                  {...routeProps}
+                  tags={ this.state.tags }
+                  title="Master Tag List"
+                  me={ this.getMe() }
+                />
+              }
+            />
+          );
+        })}
+      </div>
+    );
   }
 
   /* Render
   ********/
   render() {
-    const HomeComponent = navComponents[0].Component;
     return (
       <BrowserRouter>
         { this.state.testsLoaded ?
+
           <div className="App">
+            {/* --- Navigation --- */}
             <ul>
               { navComponents.map(({ name }, index) => {
                 return ( <li key={ index }><Link to={ '/' + name }>{ name }</Link></li> );
               })}
             </ul>
-            <div className="App-intro">
-              <Route path="/" component={ HomeComponent } />
-              <Route
-                path="/tags/:tagId"
-                render={
-                  routeProps => <TagDetail
-                    {...routeProps}
-                    tag={ this.getTagById(routeProps.match.params.tagId) }
-                    usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
-                  />
-                }
-              />              
-              { navComponents.map(({ name, Component, pathSuffix }) => {
-                return (
-                  <Route
-                    key={ name }
-                    path={ "/" + name + (pathSuffix || '') }
-                    render={
-                      routeProps => <Component
-                        {...routeProps}
-                        tags={ this.state.tags }
-                        title="Master Tag List"
-                        me={ this.getMe() }
-                      />
-                    }
-                  />
-                );
-              })}
-            </div>
 
+            {/* --- Routes --- */}
+            { this.getRoutes() }
+
+            {/* --- Questions --- */}
             <h2>Questions</h2>
             <div className="initializeTests">
               { this.state.testInstances }
             </div>
           </div>
+
         : this.state.testLoadError ?
+
           <div>Error loading tests.</div>
+
         : 'Loading...' }
 
         <iframe
