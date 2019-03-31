@@ -184,13 +184,8 @@ class App extends Component {
   }
 
   getRoutes() {
-    const HomeComponent = navComponents[0].Component;
     return (
       <div className="App-intro">
-
-        {/* --- Home --- */}
-        <Route path="/" component={ HomeComponent } />
-
         {/* --- Tag Detail View --- */}
         <Route
           path="/tags/:tagId"
@@ -227,17 +222,21 @@ class App extends Component {
   /* Render
   ********/
   render() {
+    const HomeComponent = navComponents[0].Component;
     return (
       <BrowserRouter>
         { this.state.testsLoaded ?
 
           <div className="App">
+            {/* --- Home --- */}
+            <Route path="/" component={ HomeComponent } />
+
             {/* --- Navigation --- */}
-            <ul>
+            <header>
               { navComponents.map(({ name }, index) => {
-                return ( <li key={ index }><Link to={ '/' + name }>{ name }</Link></li> );
+                return ( <button key={ index }><Link to={ '/' + name }>{ name }</Link></button> );
               })}
-            </ul>
+            </header>
 
             {/* --- Routes --- */}
             { this.getRoutes() }

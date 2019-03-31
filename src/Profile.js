@@ -3,7 +3,7 @@ import TagList from './TagList.js';
 
 const Profile = ({ me, tags }) => {
 	return (
-	  <div>
+	  <div className="profile">
 		<h2>Profile</h2>
 		<h3>{ me.name }</h3>
 
@@ -15,3 +15,8 @@ const Profile = ({ me, tags }) => {
 };
 
 export default Profile;
+// Flashmobs
+// Peace through freedom
+// Identify a song
+// Identify song lyrics
+// 

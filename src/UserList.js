@@ -13,7 +13,7 @@ const UserList = (props) => {
 			<h2>{ title }</h2>
 			{
 				users.length ?
-					<ul>
+					<ul class="clearfix">
 						{ users.map(user => ( <User user={user} {...props} /> )) }
 					</ul>
 				: children

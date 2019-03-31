@@ -3,7 +3,8 @@ import React from 'react';
 const User = ({ user }) => {
 	return (
 		<li>
-			{ user.name }
+			<img src={ user.avatar } width="50" />
+			<p className="name">{ user.name }</p>
 		</li>
 	);
 };
