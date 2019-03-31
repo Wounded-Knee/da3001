@@ -9,7 +9,7 @@ const TagList = ({ title, tags, children }) => {
 		{
 			visibleTags.length ?
 				<ul className="clearfix">
-					{ visibleTags.map(tag => tag.name !== undefined ? <Tag key={tag.id} tag={tag} /> : '') }
+					{ visibleTags.map(tag => <Tag key={tag.id} tag={tag} />) }
 				</ul>
 			: children
 		}

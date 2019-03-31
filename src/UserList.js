@@ -1,17 +1,23 @@
 import React from 'react';
+import User from './User.js';
 
 const UserList = (props) => {
 	const {
 		users,
 		title,
+		children,
 	} = props;
 
 	return (
 		<div className="userList">
 			<h2>{ title }</h2>
-			<ul className="userList">
-				{ users.map(user => ( <li>{ user.name }</li> )) }
-			</ul>
+			{
+				users.length ?
+					<ul>
+						{ users.map(user => ( <User user={user} {...props} /> )) }
+					</ul>
+				: children
+			}
 		</div>
 	);
 };
