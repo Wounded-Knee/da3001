@@ -69,7 +69,7 @@ class App extends Component {
 
   initializeTest(test) {
     pluck(test.getAnswers(), 'tag').map((tagName, index) => {
-      this.createTag(
+      return this.createTag(
         tagName,
         globalTagId => {
           test.assignGlobalIdToTag(index, globalTagId);

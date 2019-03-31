@@ -4,12 +4,22 @@ class AbstractTest extends Component {
 	constructor(props) {
 		super(props);
 		this.testData = props.testData;
-		this.testData.answers = this.testData.answers.map(answer => ({...answer, tag: (this.testData.tagEmoji || '⚉') + ' ' + answer.tag}));
+		// Add emoji to answers
+		this.testData.answers = this.testData.answers.map(
+			answer => ({
+				...answer,
+				tag: this.getEmoji() + ' ' + answer.tag
+			})
+		);
 		props.onInitialize(this);
 	}
 
 	assignGlobalIdToTag(answerIndex, globalTagId) {
 		this.testData.answers[answerIndex].globalTagId = globalTagId;
+	}
+
+	getEmoji() {
+		return this.testData.tagEmoji;
 	}
 
 	getQuestion() {
@@ -39,12 +49,12 @@ class AbstractTest extends Component {
 
 	render() {
 		return this.props.shouldTestRender(this) ? (
-		  	<div>
-			  	{ this.getQuestion() }
-	  			{ this.getAnswers().map((answer, index) => (
-	  				<button key={index} onClick={ this.recordAnswer.bind(this, index) }>{ answer.text }</button>
-	  			))}
-  			</div>
+			<div>
+				{ this.getEmoji() + ' ' + this.getQuestion() }
+				{ this.getAnswers().map((answer, index) => (
+					<button key={index} onClick={ this.recordAnswer.bind(this, index) }>{ answer.text }</button>
+				))}
+			</div>
 		) : '';
 	};
 };
