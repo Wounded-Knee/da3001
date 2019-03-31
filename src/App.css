@@ -1,81 +1,23 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.tagList {
-  list-style-type: none;
-  text-align: center;
-}
-.tagList li {
-  display: inline-block;
-  border: 1px solid black;
-  border-radius: 4px;
-  padding: 4px;
-  margin: 4px;
-}
-.tagList li a {
+/* Reset
+**********/
+a {
   text-decoration: none;
-  color: #000;
+  color: inherit;
 }
-
-.clearfix::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-iframe {
-  display: block;
-  margin: auto;
-  margin-top: 100px;
-}
-
-.userList ul {
+ul {
   list-style-type: none;
-}
-
-.userList ul li {
-  float: left;
-  border: 1px solid #000;
-  width: 170px;
-}
-
-.userList ul li p {
+  padding: 0;
   margin: 0;
-  line-height: 4em;
-  font-weight: bold;
+}
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
 }
 
+/* Chrome
+**********/
+
+/* Chrome -> Shadow
+*******************/
 .tagList li,
 .userList ul li {
   border-radius: 6px;
@@ -86,48 +28,25 @@ iframe {
   box-shadow: 10px 10px 6px -11px rgba(0,0,0,0.75);
 }
 
-.userList ul li img {
-  float: left;
+/* Chrome -> Headed Divisions
+*****************************/
+.hdiv > p,
+.hdiv > ul {
+  padding: 2em;
 }
 
-.testList ul {
-  list-style-type: none;
-}
-.testList ul li {
-  padding: 1em;
-  border-bottom: 1px dotted #ccc;
-}
-.testList ul li button {
-  margin: 0 0.5em;
+.hdiv .hdiv > p,
+.hdiv .hdiv > ul {
+  padding: 0;
 }
 
-h2 {
+.hdiv > h2 {
   line-height: 1.7em;
   background: #ccc;
 }
 
-ul {
-  margin: 0;
-}
-
-header {
-  margin-top: 2em;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-image: url('/cinemagraph.gif');
-  height: 4em;
-  margin: 0;
-  padding-top: 4.5em;
-}
-
-header button {
-  margin: 0 2em;
-}
-
-.Home h2 {
-  margin-top: 0;
-}
-
+/* Chrome -> Buttons
+********************/
 button {
   -moz-box-shadow: 0px 3px 4px -2px #2b2b2b;
   -webkit-box-shadow: 0px 3px 4px -2px #2b2b2b;
@@ -167,7 +86,109 @@ button:active {
   position:relative;
   top:1px;
 }
-button a {
-  text-decoration: none;
-  color: inherit;
+
+/* App
+********/
+.App {
+  text-align: center;
+}
+
+/* App -> Header
+*******************/
+header {
+  margin-top: 2em;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-image: url('/cinemagraph.gif');
+  height: 4em;
+  margin: 0;
+  padding-top: 4.5em;
+}
+
+header button {
+  margin: 0 2em;
+}
+
+/* Lists -> Tags
+*****************/
+.tagList {
+  text-align: center;
+}
+
+.tagList li {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 4px;
+  overflow: hidden;
+  height: 1em;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.tagList li.emoji_mode {
+  width: auto;
+}
+
+/* Lists -> Users
+*****************/
+.userList ul li {
+  float: left;
+  border: 1px solid #000;
+  width: 170px;
+}
+
+.userList ul li p {
+  margin: 0;
+  line-height: 4em;
+  font-weight: bold;
+}
+
+.userList ul li img {
+  float: left;
+}
+
+/* Lists -> Users Tags
+***********************/
+.userList .tagList {
+  clear: both;
+}
+
+.userList .tagList ul li {
+  padding: 0;
+  border: 0;
+  font-size: 20px;
+}
+
+/* Lists -> Tests
+******************/
+.testList ul li {
+  padding: 2em;
+}
+
+.testList ul li:not(:last-child) {
+  border-bottom: 1px dotted #ccc;
+}
+
+.testList ul li .question {
+  margin-bottom: 1em;
+}
+
+.testList ul li button {
+  margin: 0 0.5em;
+}
+
+/* Clearfix
+************/
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+iframe {
+  display: block;
+  margin: auto;
+  margin-top: 100px;
 }

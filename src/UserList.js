@@ -1,5 +1,6 @@
 import React from 'react';
 import User from './User.js';
+import HDiv from './HDiv.js';
 
 const UserList = (props) => {
 	const {
@@ -9,8 +10,7 @@ const UserList = (props) => {
 	} = props;
 
 	return (
-		<div className="userList">
-			<h2>{ title }</h2>
+		<HDiv classNames="userList" title={ title }>
 			{
 				users.length ?
 					<ul class="clearfix">
@@ -18,7 +18,7 @@ const UserList = (props) => {
 					</ul>
 				: children
 			}
-		</div>
+		</HDiv>
 	);
 };
 
