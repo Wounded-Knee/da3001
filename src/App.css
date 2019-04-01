@@ -1,33 +1,194 @@
+/* Reset
+**********/
+a {
+  text-decoration: none;
+  color: inherit;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+}
+
+/* Chrome
+**********/
+
+/* Chrome -> Shadow
+*******************/
+.tagList li,
+.userList ul li {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px outset;
+  -webkit-box-shadow: 10px 10px 6px -11px rgba(0,0,0,0.75);
+  -moz-box-shadow: 10px 10px 6px -11px rgba(0,0,0,0.75);
+  box-shadow: 10px 10px 6px -11px rgba(0,0,0,0.75);
+}
+
+/* Chrome -> Headed Divisions
+*****************************/
+.hdiv > p,
+.hdiv > ul {
+  padding: 2em;
+}
+
+.hdiv .hdiv > p,
+.hdiv .hdiv > ul {
+  padding: 0;
+}
+
+.hdiv > h2 {
+  line-height: 1.7em;
+  background: #ccc;
+}
+
+/* Chrome -> Buttons
+********************/
+button {
+  -moz-box-shadow: 0px 3px 4px -2px #2b2b2b;
+  -webkit-box-shadow: 0px 3px 4px -2px #2b2b2b;
+  box-shadow: 0px 3px 4px -2px #2b2b2b;
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #bababa));
+  background:-moz-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:-webkit-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:-o-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:-ms-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:linear-gradient(to bottom, #ededed 5%, #bababa 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#bababa',GradientType=0);
+  background-color:#ededed;
+  -moz-border-radius:7px;
+  -webkit-border-radius:7px;
+  border-radius:7px;
+  border:2px solid #c2c2c2;
+  display:inline-block;
+  cursor:pointer;
+  color:#666666;
+  font-family:Arial;
+  font-size: 13px;
+  padding:7px 15px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #e8e8e8;
+}
+button:hover {
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bababa), color-stop(1, #ededed));
+  background:-moz-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:-webkit-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:-o-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:-ms-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:linear-gradient(to bottom, #bababa 5%, #ededed 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bababa', endColorstr='#ededed',GradientType=0);
+  background-color:#bababa;
+}
+button:active {
+  position:relative;
+  top:1px;
+}
+
+/* App
+********/
 .App {
   text-align: center;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+/* App -> Header
+*******************/
+header {
+  margin-top: 2em;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-image: url('/cinemagraph.gif');
+  height: 4em;
+  margin: 0;
+  padding-top: 4.5em;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+header button {
+  margin: 0 2em;
 }
 
-.App-link {
-  color: #61dafb;
+/* Lists -> Tags
+*****************/
+.tagList {
+  text-align: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.tagList li {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 4px;
+  overflow: hidden;
+  height: 1em;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.tagList li.emoji_mode {
+  width: auto;
+}
+
+/* Lists -> Users
+*****************/
+.userList ul li {
+  float: left;
+  border: 1px solid #000;
+  width: 170px;
+}
+
+.userList ul li p {
+  margin: 0;
+  line-height: 4em;
+  font-weight: bold;
+}
+
+.userList ul li img {
+  float: left;
+}
+
+/* Lists -> Users Tags
+***********************/
+.userList .tagList {
+  clear: both;
+}
+
+.userList .tagList ul li {
+  padding: 0;
+  border: 0;
+  font-size: 20px;
+}
+
+/* Lists -> Tests
+******************/
+.testList ul li {
+  padding: 2em;
+}
+
+.testList ul li:not(:last-child) {
+  border-bottom: 1px dotted #ccc;
+}
+
+.testList ul li .question {
+  margin-bottom: 1em;
+}
+
+.testList ul li button {
+  margin: 0 0.5em;
+}
+
+/* Clearfix
+************/
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+iframe {
+  display: block;
+  margin: auto;
+  margin-top: 100px;
 }
