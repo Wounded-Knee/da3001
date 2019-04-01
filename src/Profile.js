@@ -1,17 +1,18 @@
 import React from 'react';
-import TagList from './TagList.js';
+import HDiv from './HDiv.js';
+import UserList from './UserList.js';
 
 const Profile = ({ me, tags }) => {
 	return (
-	  <div>
-		<h2>Profile</h2>
-		<h3>{ me.name }</h3>
-
-		<TagList title="Your Tags" tags={ me.tags }>
-			<p>None yet... Answer some questions, below.</p>
-		</TagList>
-	  </div>
+		<HDiv title="Profile" classNames="profile">
+			<UserList users={ [me] } />
+		</HDiv>
 	);
 };
 
 export default Profile;
+// Flashmobs
+// Peace through freedom
+// Identify a song
+// Identify song lyrics
+// 

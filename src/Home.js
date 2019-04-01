@@ -1,9 +1,8 @@
 import React from 'react';
 
 const Home = () => (
-  <div>
+  <div className="Home">
     <h2>Paxterra Initiative #1</h2>
-    This is the app. Play with it.
   </div>
 );
 

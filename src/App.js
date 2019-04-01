@@ -184,13 +184,8 @@ class App extends Component {
   }
 
   getRoutes() {
-    const HomeComponent = navComponents[0].Component;
     return (
       <div className="App-intro">
-
-        {/* --- Home --- */}
-        <Route path="/" component={ HomeComponent } />
-
         {/* --- Tag Detail View --- */}
         <Route
           path="/tags/:tagId"
@@ -227,17 +222,31 @@ class App extends Component {
   /* Render
   ********/
   render() {
+    const HomeComponent = navComponents[0].Component;
+    const youtubeVideos = [
+      'DWO1pkHgrBM', 'gjY3LxPNaRM'
+    ];
     return (
       <BrowserRouter>
         { this.state.testsLoaded ?
 
           <div className="App">
+            {/* --- Home --- */}
+            <Route path="/" component={ HomeComponent } />
+
             {/* --- Navigation --- */}
-            <ul>
+            <header>
               { navComponents.map(({ name }, index) => {
-                return ( <li key={ index }><Link to={ '/' + name }>{ name }</Link></li> );
+                return (
+                  <button key={ index } onClick={ (e) => {
+                    var a = e.target.getElementsByTagName('a')[0] || e.target;
+                    a.click();
+                  }}>
+                    <Link to={ '/' + name }>{ name }</Link>
+                  </button>
+                );
               })}
-            </ul>
+            </header>
 
             {/* --- Routes --- */}
             { this.getRoutes() }
@@ -262,7 +271,7 @@ class App extends Component {
           title="video"
           width="560"
           height="315"
-          src="https://www.youtube.com/embed/gjY3LxPNaRM"
+          src={ "https://www.youtube.com/embed/" + youtubeVideos[Math.floor(Math.random()*youtubeVideos.length)] }
           frameborder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>

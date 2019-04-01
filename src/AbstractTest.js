@@ -49,12 +49,12 @@ class AbstractTest extends Component {
 
 	render() {
 		return this.props.shouldTestRender(this) ? (
-			<div>
-				{ this.getEmoji() + ' ' + this.getQuestion() }
+			<li>
+				<p className="question">{ this.getEmoji() + ' ' + this.getQuestion() }</p>
 				{ this.getAnswers().map((answer, index) => (
 					<button key={index} onClick={ this.recordAnswer.bind(this, index) }>{ answer.text }</button>
 				))}
-			</div>
+			</li>
 		) : '';
 	};
 };
