@@ -87,6 +87,35 @@ button:active {
   top:1px;
 }
 
+/* Card Fan
+************/
+.cardFan {
+  position: relative;
+  height: 100px;
+}
+.cardFan > li {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center 120%;
+  transition: transform 1s ease-out;
+}
+.cardFan > li:hover {
+  z-index: 10;
+}
+.cardFan.count4 > li:nth-child(1) {
+  transform: translate(-50%, -50%) rotate(-3deg);
+}
+.cardFan.count4 > li:nth-child(2) {
+  transform: translate(-50%, -50%) rotate(-1deg);
+}
+.cardFan.count4 > li:nth-child(3) {
+  transform: translate(-50%, -50%) rotate(1deg);
+}
+.cardFan.count4 > li:nth-child(4) {
+  transform: translate(-50%, -50%) rotate(3deg);
+}
+
 /* App
 ********/
 .App {
@@ -134,9 +163,9 @@ header button {
 /* Lists -> Users
 *****************/
 .userList ul li {
-  float: left;
   border: 1px solid #000;
   width: 170px;
+  background: #fff;
 }
 
 .userList ul li p {

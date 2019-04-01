@@ -13,7 +13,7 @@ const UserList = (props) => {
 		<HDiv classNames="userList" title={ title }>
 			{
 				users.length ?
-					<ul class="clearfix">
+					<ul class="clearfix cardFan count4">
 						{ users.map(user => ( <User user={user} {...props} /> )) }
 					</ul>
 				: children
