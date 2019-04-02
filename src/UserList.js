@@ -13,8 +13,16 @@ const UserList = (props) => {
 		<HDiv classNames="userList grayscale" title={ title }>
 			{
 				users.length ?
-					<ul class="clearfix cardFan count4">
-						{ users.map(user => ( <User user={user} {...props} /> )) }
+					<ul class="clearfix cardFan">
+						{ users.map(
+							(user, index) => (
+								<User
+									style={{ transform: "translate(-50%, -50%) rotate(" + ( (-40 / users.length) * index + 20 ) + "deg)" }}
+									user={ user }
+									{...props}
+								/>
+							)
+						) }
 					</ul>
 				: children
 			}

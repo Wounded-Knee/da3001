@@ -116,18 +116,6 @@ button:active {
 .cardFan > li:hover {
   z-index: 10;
 }
-.cardFan.count4 > li:nth-child(1) {
-  transform: translate(-50%, -50%) rotate(-3deg);
-}
-.cardFan.count4 > li:nth-child(2) {
-  transform: translate(-50%, -50%) rotate(-1deg);
-}
-.cardFan.count4 > li:nth-child(3) {
-  transform: translate(-50%, -50%) rotate(1deg);
-}
-.cardFan.count4 > li:nth-child(4) {
-  transform: translate(-50%, -50%) rotate(3deg);
-}
 
 /* App
 ********/
