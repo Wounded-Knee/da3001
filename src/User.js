@@ -2,9 +2,9 @@ import React from 'react';
 import TagList from './TagList.js';
 import tagDisplayMode from './constants.js';
 
-const User = ({ user, index, style }) => {
+const User = ({ user, index, style, me }) => {
 	return (
-		<li style={ style }>
+		<li style={ style } className={ me && user.id === me.id ? 'me' : '' }>
 			<img src={ user.avatar } alt={ user.name } width="50" />
 			<p className="name">{ user.name }</p>
 			<TagList tags={ user.tags.splice(0,6) } displayMode={ tagDisplayMode.EMOJI }>

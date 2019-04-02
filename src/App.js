@@ -206,7 +206,7 @@ class App extends Component {
           <div className="App">
             {/* --- Navigation --- */}
             <header>
-              <UserList users={ [this.getMe()] } />
+              <UserList me={ this.getMe() } users={ [this.getMe()] } />
             </header>
 
             {/* --- Routes --- */}
