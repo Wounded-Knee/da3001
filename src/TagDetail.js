@@ -16,7 +16,7 @@ const TagDetail = (props) => {
 			<p>It is a cool tag.</p>
 		</HDiv>
 
-		<UserList title="Users who have this tag" users={usersWhoHaveTag}>
+		<UserList cardFan title="Users who have this tag" users={usersWhoHaveTag} {...props}>
 			<p>Nobody has this tag.</p>
 		</UserList>
 	  </div>

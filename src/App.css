@@ -100,23 +100,6 @@ button:active {
   top:1px;
 }
 
-/* Card Fan
-************/
-.cardFan {
-  position: relative;
-  height: 100px;
-}
-.cardFan > li {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform-origin: center 120%;
-  transition: transform 1s ease-out;
-}
-.cardFan > li:hover {
-  z-index: 10;
-}
-
 /* App
 ********/
 .App {
@@ -163,10 +146,21 @@ header button {
 /* Lists -> Users
 *****************/
 .userList ul li {
+  position: relative;
   border: 1px outset #fff;
   background: #fff;
   width: 170px;
   background: #fff;
+  display: inline-block;
+}
+.userList ul li.me:after {
+  content: '';
+  background: url('/stripe.png') repeat;
+  width: 5px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .userList ul li p {
@@ -207,6 +201,24 @@ header button {
 
 .testList ul li button {
   margin: 0 0.5em;
+}
+
+/* Card Fan
+************/
+.cardFan {
+  position: relative;
+  height: 100px;
+}
+.userList .cardFan > li,
+.cardFan > li {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center 120%;
+  transition: transform 1s ease-out;
+}
+.cardFan > li:hover {
+  z-index: 10;
 }
 
 /* Clearfix
