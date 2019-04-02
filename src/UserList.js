@@ -10,7 +10,7 @@ const UserList = (props) => {
 	} = props;
 
 	return (
-		<HDiv classNames="userList" title={ title }>
+		<HDiv classNames="userList grayscale" title={ title }>
 			{
 				users.length ?
 					<ul class="clearfix cardFan count4">

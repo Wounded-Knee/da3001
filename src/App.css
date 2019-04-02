@@ -13,6 +13,18 @@ h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
 
+/* Grayscale
+*************/
+.grayscale,
+.greyscale {
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+  filter: grayscale(100%);
+  filter: gray; /* IE 6-9 */
+}
+
 /* Chrome
 **********/
 
@@ -126,11 +138,10 @@ button:active {
 /* App -> Header
 *******************/
 header {
-  margin-top: 2em;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-image: url('/cinemagraph.gif');
-  height: 4em;
+  height: 12em;
   margin: 0;
   padding-top: 4.5em;
 }
@@ -165,6 +176,7 @@ header button {
 *****************/
 .userList ul li {
   border: 1px outset #fff;
+  background: #fff;
   width: 170px;
   background: #fff;
 }

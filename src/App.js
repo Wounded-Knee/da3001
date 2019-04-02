@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
 import Home from './Home.js';
-import Profile from './Profile.js';
+import UserList from './UserList.js';
 import TestPromises from './TestPromises.js';
 import TagList from './TagList.js';
 import TagDetail from './TagDetail.js';
@@ -9,12 +9,6 @@ import TestList from './TestList.js';
 import DefaultState from './data/DefaultState.js';
 import pluck from 'utils-pluck';
 import './App.css';
-
-const navComponents = [
-  { name: 'Home', Component: Home },
-  { name: 'Profile', Component: Profile },
-  { name: 'TagList', Component: TagList },
-];
 
 class App extends Component {
   constructor(props) {
@@ -197,24 +191,6 @@ class App extends Component {
             />
           }
         />
-
-        {/* --- Regular Routes --- */}
-        { navComponents.map(({ name, Component, pathSuffix }) => {
-          return (
-            <Route
-              key={ name }
-              path={ "/" + name + (pathSuffix || '') }
-              render={
-                routeProps => <Component
-                  {...routeProps}
-                  tags={ this.state.tags }
-                  title="Master Tag List"
-                  me={ this.getMe() }
-                />
-              }
-            />
-          );
-        })}
       </div>
     );
   }
@@ -222,30 +198,17 @@ class App extends Component {
   /* Render
   ********/
   render() {
-    const HomeComponent = navComponents[0].Component;
     const youtubeVideos = [
-      'DWO1pkHgrBM', 'gjY3LxPNaRM'
+      'DWO1pkHgrBM', 'gjY3LxPNaRM', '7xxgRUyzgs0'
     ];
     return (
       <BrowserRouter>
         { this.state.testsLoaded ?
 
           <div className="App">
-            {/* --- Home --- */}
-            <Route path="/" component={ HomeComponent } />
-
             {/* --- Navigation --- */}
             <header>
-              { navComponents.map(({ name }, index) => {
-                return (
-                  <button key={ index } onClick={ (e) => {
-                    var a = e.target.getElementsByTagName('a')[0] || e.target;
-                    a.click();
-                  }}>
-                    <Link to={ '/' + name }>{ name }</Link>
-                  </button>
-                );
-              })}
+              <UserList users={ [this.getMe()] } />
             </header>
 
             {/* --- Routes --- */}

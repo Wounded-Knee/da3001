@@ -1,9 +1,8 @@
 import React from 'react';
+import HDiv from './HDiv.js';
 
 const Home = () => (
-  <div className="Home">
-    <h2>Paxterra Initiative #1</h2>
-  </div>
+  <HDiv classNames="Home" title="Paxterra Initiative #1" />
 );
 
 export default Home;
