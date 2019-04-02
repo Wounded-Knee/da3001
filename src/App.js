@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Link, Route } from 'react-router-dom';
-import Home from './Home.js';
+import { BrowserRouter, Route } from 'react-router-dom';
 import UserList from './UserList.js';
 import TestPromises from './TestPromises.js';
-import TagList from './TagList.js';
 import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
 import DefaultState from './data/DefaultState.js';
