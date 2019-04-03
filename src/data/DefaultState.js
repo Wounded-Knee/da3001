@@ -11,7 +11,6 @@ const DefaultState = {
   userTags: [],
   testTags: [],
   tests: [],
-  testInstances: [],
 };
 
 // Temporarily generating fake users

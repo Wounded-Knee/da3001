@@ -13,7 +13,7 @@ const TestList = (props) => {
 			{
 				tests.length ?
 					<ul className="clearfix">
-						{ tests.map((Test, index) => <Test key={ index } {...props} />) }
+						{ tests.map(({ id, TestClass }) => <TestClass key={ id } testClass={ TestClass } {...props} />) }
 					</ul>
 				: children
 			}

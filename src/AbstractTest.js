@@ -11,7 +11,10 @@ class AbstractTest extends Component {
 				tag: this.getEmoji() + ' ' + answer.tag
 			})
 		);
-		props.onInitialize(this);
+		props.onInitialize({
+			TestClass: props.testClass,
+			testInstance: this
+		});
 	}
 
 	assignGlobalIdToTag(answerIndex, globalTagId) {

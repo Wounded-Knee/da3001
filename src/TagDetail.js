@@ -3,7 +3,7 @@ import UserList from './UserList.js';
 import HDiv from './HDiv.js';
 
 const TagDetail = (props) => {
-	if (!props.tag) return '';
+	if (!props.tag) return 'Error. No tag found at TagDetail.js.';
 
 	const {
 		tag,
@@ -13,7 +13,7 @@ const TagDetail = (props) => {
 	return (
 	  <div>
 		<HDiv classNames="tagDetail" title={ "Tag Detail for " + tag.name }>
-			<p>It is a cool tag.</p>
+			<p>{ tag.test.testInstance.getQuestion() }</p>
 		</HDiv>
 
 		<UserList cardFan title="Users who have this tag" users={usersWhoHaveTag} {...props}>

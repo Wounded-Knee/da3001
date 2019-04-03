@@ -9,238 +9,276 @@ import pluck from 'utils-pluck';
 import './App.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    // Setup state
-    this.state = DefaultState;
+		// Setup state
+		this.state = DefaultState;
 
-    // Handle promises for test module loading
-    this.awaitTestPromises();
+		// Handle promises for test module loading
+		this.awaitTestPromises();
 
-    // Scope pointer for debuggery
-    setTimeout(() => window.da3001 = this, 500);
-  }
+		// Scope pointer for debuggery
+		setTimeout(() => window.da3001 = this, 500);
+	}
 
-  awaitTestPromises() {
-    Promise.all(TestPromises).then(
-      this.onImportAllTests.bind(this)
-    ).catch(
-      this.onImportAllTests.bind(this)
-    );
-  }
+	awaitTestPromises() {
+		const onImportAllTests = testPromises => {
+			this.setState((previousState, currentProps) => {
+				var testId = previousState.tests.length;
+				return {
+					tests: testPromises ? testPromises.map((testPromise, index) => ({
+						id: testId + index,
+						TestClass: testPromise.default,
+						testInstance: undefined,
+					})) : [],
+					testsLoaded: !!testPromises,
+					testLoadError: !testPromises
+				};
+			});
+		};
 
-  onImportAllTests(testPromises) {
-    this.setState({
-      tests: testPromises ? testPromises.map(testPromise => testPromise.default) : [],
-      testsLoaded: !!testPromises,
-      testLoadError: !testPromises
-    });
-  }
+		Promise.all(TestPromises).then(
+			onImportAllTests
+		).catch(
+			onImportAllTests
+		);
+	}
 
-  initializeTest(test) {
-    pluck(test.getAnswers(), 'tag').map((tagName, index) => {
-      return this.createTag(
-        tagName,
-        globalTagId => {
-          test.assignGlobalIdToTag(index, globalTagId);
-          this.setState((previousState, currentProps) => {
-            return {
-              ...previousState,
-              testTags: [
-                ...previousState.testTags,
-                {
-                  testIndex: previousState.tests.indexOf(test),
-                  tagId: globalTagId
-                }
-              ]
-            }
-          });
-        }
-      )
-    });
-  }
+	initializeTest({ TestClass, testInstance }) {
+		pluck(testInstance.getAnswers(), 'tag').map((tagName, index) => {
+			return this.createTag(
+				tagName,
+				globalTagId => {
+					testInstance.assignGlobalIdToTag(index, globalTagId);
+					this.setState((previousState, currentProps) => {
+						return {
+							...previousState,
+							tests: [
+								...(previousState.tests.map(test => ({
+									...test,
+									testInstance: (test.TestClass === TestClass) ? testInstance : test.testInstance
+								})))
+							],
+							testTags: [
+								...previousState.testTags,
+								{
+									testId: this.getIdByTestClass(TestClass),
+									tagId: globalTagId
+								}
+							]
+						}
+					});
+				}
+			)
+		});
+	}
 
-  /* Tags
-  ********/
-  createTag(tagName, registerNewTagIdCallback) {
-    this.setState((previousState, currentProps) => {
-      const globalTagId = Math.max(...pluck(previousState.tags, 'id'), -1)+1;
-      registerNewTagIdCallback(globalTagId);
-      return {
-        ...previousState,
-        tags: [
-          ...previousState.tags,
-          {
-            id: globalTagId,
-            name: tagName
-          }
-        ]
-      };
-    });
-  }
+	/* Tests
+	*********/
+	getIdByTestClass(TestClass) {
+		return this.state.tests.filter(test => test.TestClass === TestClass)[0].id;
+	}
 
-  getTagById(globalTagId) {
-    return this.state.tags.filter(tag => tag.id === parseInt(globalTagId))[0];
-  }
+	getTestById(testId) {
+		return this.state.tests.filter(test => test.id === testId)[0];
+	}
 
-  /* Users
-  ********/
-  getUsers() {
-    return this.addTagsToUsers(this.state.users);
-  }
+	getTestByTag(tag) {
+		return this.getTestById(this.state.testTags.filter(testTag => testTag.tagId === tag.id)[0].testId);
+	}
 
-  getUserById(id) {
-    return this.addTagsToUsers(this.state.users.filter(( user ) => ( user.id === id )))[0];
-  }
+	/* Tags
+	********/
+	createTag(tagName, registerNewTagIdCallback) {
+		this.setState((previousState, currentProps) => {
+			const globalTagId = Math.max(...pluck(previousState.tags, 'id'), -1)+1;
+			registerNewTagIdCallback(globalTagId);
+			return {
+				...previousState,
+				tags: [
+					...previousState.tags,
+					{
+						id: globalTagId,
+						name: tagName
+					}
+				]
+			};
+		});
+	}
 
-  getUsersById(ids) {
-    return this.addTagsToUsers(this.state.users.filter(( user ) => ( ids.indexOf(user.id) !== -1 )));
-  }
+	getTagById(globalTagId) {
+		return this.getTagsById([ parseInt(globalTagId) ])[0];
+	}
 
-  getMe() {
-    return this.getUserById(this.state.me.id);
-  }
+	getTagsById(globalTagIds) {
+		return this.hydrateTags(this.state.tags.filter(tag => globalTagIds.indexOf(tag.id) !== -1));
+	}
 
-  /* User Tags
-  ************/
-  addTagsToUsers(users) {
-    return users.map((user) => {
-      const userTags = this.state.userTags.filter(({ userId, tagId }) => ( userId === user.id ));
-      return {
-        ...user,
-        tags: this.state.tags.filter(({ id, name }) => ( pluck(userTags, 'tagId').indexOf(id) !== -1 ))
-      };
-    });
-  }
+	hydrateTags(tags) {
+		return tags.map(tag => ({
+			...tag,
+			test: this.getTestByTag(tag)
+		}));
+	}
 
-  giveTagToMe(globalTagId) {
-    this.giveTagToUser(this.getMe(), globalTagId);
-  }
+	/* Users
+	********/
+	getUsers() {
+		return this.hydrateUsers(this.state.users);
+	}
 
-  giveTagToUser(user, globalTagId) {
-    this.setState((previousState, currentProps) => {
-      return {
-        ...previousState,
-        userTags: [
-          ...previousState.userTags,
-          {
-            userId: user.id,
-            tagId: globalTagId
-          }
-        ]
-      }
-    })
-  }
+	getUserById(id) {
+		return this.getUsersById([id])[0];
+	}
 
-  /*
-   * Receives an array of globalTagIds,
-   * removes globalTagIds which the targeted user does not have,
-   * returns the changed array
-   *
-   * Except it does not change the array, it creates a new one.
-   **/
-  tagsUserHas(user, globalTagIds) {
-    // Todo: Limit number of id checks for privacy
-    const userTags = pluck(user.tags, 'id');
-    return globalTagIds.filter(tagId => userTags.indexOf(tagId) !== -1);
-  }
+	getUsersById(ids) {
+		return this.hydrateUsers(this.state.users.filter(( user ) => ( ids.indexOf(user.id) !== -1 )));
+	}
 
-  tagsIHave(globalTagIds) {
-    return this.tagsUserHas(this.getMe(), globalTagIds);
-  }
+	getMe() {
+		return this.getUserById(this.state.me.id);
+	}
 
-  usersWhoHaveTag(globalTagId) {
-    const userTags = this.state.userTags.filter(userTag => userTag.tagId === parseInt(globalTagId));
-    const idsOfUsersWhoHaveTheTag = pluck(userTags, 'userId');
-    const usersWhoHaveTag = this.getUsersById(idsOfUsersWhoHaveTheTag);
-    return usersWhoHaveTag;
-  }
+	/* User Tags
+	************/
+	hydrateUsers(users) {
+		return users.map(user => {
+			const userTags = this.state.userTags.filter(({ userId, tagId }) => ( userId === user.id ));
+			return {
+				...user,
+				tags: this.state.tags.filter(({ id, name }) => ( pluck(userTags, 'tagId').indexOf(id) !== -1 ))
+			};
+		});
+	}
 
-  /* Misc
-  ********/
-  recordAnswer(answer) {
-    this.giveTagToMe(answer.globalTagId);
-  }
+	giveTagToMe(globalTagId) {
+		this.giveTagToUser(this.getMe(), globalTagId);
+	}
 
-  /* Render Helpers
-  ***************/
-  shouldTestRender(test) {
-    const tagsInTest = pluck(test.getAnswers(), 'globalTagId');
-    const dependsOnTags = test.dependsOnTags();
-    return (
-      test.shouldTestRender(this.tagsIHave(dependsOnTags)) &&
-      this.tagsIHave(tagsInTest).length === 0 &&
-      true
-    );
-  }
+	giveTagToUser(user, globalTagId) {
+		this.setState((previousState, currentProps) => {
+			return {
+				...previousState,
+				userTags: [
+					...previousState.userTags,
+					{
+						userId: user.id,
+						tagId: globalTagId
+					}
+				]
+			}
+		})
+	}
 
-  getRoutes() {
-    return (
-      <div className="App-intro">
-        {/* --- Tag Detail View --- */}
-        <Route
-          path="/tags/:tagId"
-          render={
-            routeProps => <TagDetail
-              {...routeProps}
-              tag={ this.getTagById(routeProps.match.params.tagId) }
-              usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
-            />
-          }
-        />
-      </div>
-    );
-  }
+	/*
+	 * Receives an array of globalTagIds,
+	 * removes globalTagIds which the targeted user does not have,
+	 * returns the changed array
+	 *
+	 * Except it does not change the array, it creates a new one.
+	 **/
+	tagsUserHas(user, globalTagIds) {
+		// Todo: Limit number of id checks for privacy
+		const userTags = pluck(user.tags, 'id');
+		return globalTagIds.filter(tagId => userTags.indexOf(tagId) !== -1);
+	}
 
-  /* Render
-  ********/
-  render() {
-    const youtubeVideos = [
-      'DWO1pkHgrBM', 'gjY3LxPNaRM', '7xxgRUyzgs0'
-    ];
-    return (
-      <BrowserRouter>
-        { this.state.testsLoaded ?
+	tagsIHave(globalTagIds) {
+		return this.tagsUserHas(this.getMe(), globalTagIds);
+	}
 
-          <div className="App">
-            {/* --- Navigation --- */}
-            <header>
-              <UserList me={ this.getMe() } users={ [this.getMe()] } />
-            </header>
+	usersWhoHaveTag(globalTagId) {
+		const userTags = this.state.userTags.filter(userTag => userTag.tagId === parseInt(globalTagId));
+		const idsOfUsersWhoHaveTheTag = pluck(userTags, 'userId');
+		const usersWhoHaveTag = this.getUsersById(idsOfUsersWhoHaveTheTag);
+		return usersWhoHaveTag;
+	}
 
-            {/* --- Routes --- */}
-            { this.getRoutes() }
+	/* Misc
+	********/
+	recordAnswer(answer) {
+		this.giveTagToMe(answer.globalTagId);
+	}
 
-            {/* --- Questions --- */}
-            <TestList
-              title="Questions"
-              tests={ this.state.tests }
-              shouldTestRender={ this.shouldTestRender.bind(this) }
-              onAnswer={ this.recordAnswer.bind(this) }
-              onInitialize={ this.initializeTest.bind(this) }
-            />
-          </div>
+	/* Render Helpers
+	***************/
+	shouldTestRender(test) {
+		const tagsInTest = pluck(test.getAnswers(), 'globalTagId');
+		const dependsOnTags = test.dependsOnTags();
+		return (
+			test.shouldTestRender(this.tagsIHave(dependsOnTags)) &&
+			this.tagsIHave(tagsInTest).length === 0 &&
+			true
+		);
+	}
 
-        : this.state.testLoadError ?
+	getRoutes() {
+		return (
+			<div className="App-intro">
+				{/* --- Tag Detail View --- */}
+				<Route
+					path="/tags/:tagId"
+					render={
+						routeProps => <TagDetail
+							{...routeProps}
+							tag={ this.getTagById(routeProps.match.params.tagId) }
+							usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
+						/>
+					}
+				/>
+			</div>
+		);
+	}
 
-          <div>Error loading tests.</div>
+	/* Render
+	********/
+	render() {
+		const youtubeVideos = [
+			'DWO1pkHgrBM', 'gjY3LxPNaRM', '7xxgRUyzgs0'
+		];
+		return (
+			<BrowserRouter>
+				{ this.state.testsLoaded ?
 
-        : 'Loading...' }
+					<div className="App">
+						{/* --- Navigation --- */}
+						<header>
+							<UserList me={ this.getMe() } users={ [this.getMe()] } />
+						</header>
 
-        <iframe
-          className="grayscale"
-          title="video"
-          width="560"
-          height="315"
-          src={ "https://www.youtube.com/embed/" + youtubeVideos[Math.floor(Math.random()*youtubeVideos.length)] }
-          frameborder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen>
-        </iframe>
-      </BrowserRouter>
-    );
-  }
+						{/* --- Routes --- */}
+						{ this.getRoutes() }
+
+						{/* --- Questions --- */}
+						<TestList
+							title="Questions"
+							tests={ this.state.tests }
+							shouldTestRender={ this.shouldTestRender.bind(this) }
+							onAnswer={ this.recordAnswer.bind(this) }
+							onInitialize={ this.initializeTest.bind(this) }
+						/>
+					</div>
+
+				: this.state.testLoadError ?
+
+					<div>Error loading tests.</div>
+
+				: 'Loading...' }
+
+				<iframe
+					className="grayscale"
+					title="video"
+					width="560"
+					height="315"
+					src={ "https://www.youtube.com/embed/" + youtubeVideos[Math.floor(Math.random()*youtubeVideos.length)] }
+					frameBorder="0"
+					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+					allowFullScreen>
+				</iframe>
+			</BrowserRouter>
+		);
+	}
 }
 
 export default App;
