@@ -229,6 +229,7 @@ class App extends Component {
         : 'Loading...' }
 
         <iframe
+          className="grayscale"
           title="video"
           width="560"
           height="315"
