@@ -1,6 +1,7 @@
 import React from 'react';
 import UserList from './UserList.js';
 import TagList from './TagList.js';
+import Tag from './Tag.js';
 import HDiv from './HDiv.js';
 
 const TagDetail = (props) => {
@@ -14,7 +15,7 @@ const TagDetail = (props) => {
 
 	return (
 	  <div>
-		<HDiv classNames="tagDetail" title={ tag.name }>
+		<HDiv classNames="tagDetail" title={ <TagList tags={ [tag] } /> }>
 			<p>{ tag.test.testInstance.getQuestion() }</p>
 		</HDiv>
 

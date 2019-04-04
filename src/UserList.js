@@ -7,8 +7,8 @@ const UserList = (props) => {
 		users,
 		title,
 		children,
-		cardFan,
 	} = props;
+	const cardFan = props.cardFan && users.length > 1;
 
 	return (
 		<HDiv classNames="userList grayscale" title={ title }>
