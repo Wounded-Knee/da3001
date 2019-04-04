@@ -33,6 +33,10 @@ class AbstractTest extends Component {
 		return this.testData.answers;
 	}
 
+	getTags() {
+		return this.testData.answers.map(answer => answer.tag);
+	}
+
 	getAnswer(answerIndex) {
 		return this.testData.answers[answerIndex];
 	}

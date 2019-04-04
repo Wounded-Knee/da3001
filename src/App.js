@@ -122,6 +122,17 @@ class App extends Component {
 		}));
 	}
 
+	getTagsByTest(test) {
+		return this.hydrateTags(
+			this.getTagsById(
+				pluck(
+					this.state.testTags.filter(testTag => testTag.testId === test.id),
+					'tagId'
+				)
+			)
+		);
+	}
+
 	/* Users
 	********/
 	getUsers() {
@@ -222,6 +233,7 @@ class App extends Component {
 					render={
 						routeProps => <TagDetail
 							{...routeProps}
+							getSiblingTags={ this.getTagsByTest.bind(this) }
 							tag={ this.getTagById(routeProps.match.params.tagId) }
 							usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
 						/>
