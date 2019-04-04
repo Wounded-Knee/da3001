@@ -1,6 +1,7 @@
 import React from 'react';
 import TagList from './TagList.js';
 import tagDisplayMode from './constants.js';
+import PropTypes from 'prop-types';
 
 const User = ({ user, index, style, me }) => {
 	return (
@@ -12,6 +13,13 @@ const User = ({ user, index, style, me }) => {
 			</TagList>
 		</li>
 	);
+};
+
+User.propTypes = {
+	user: PropTypes.object.isRequired,
+	index: PropTypes.number,
+	style: PropTypes.object,
+	me: PropTypes.object,
 };
 
 export default User;

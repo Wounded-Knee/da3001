@@ -26,6 +26,7 @@ class App extends Component {
 	awaitTestPromises() {
 		const onImportAllTests = testPromises => {
 			this.setState((previousState, currentProps) => {
+				if (this.props.onLoad) this.props.onLoad();
 				var testId = previousState.tests.length;
 				return {
 					tests: testPromises ? testPromises.map((testPromise, index) => ({
@@ -134,6 +135,36 @@ class App extends Component {
 		);
 	}
 
+	getObserverPrivacylevel(observedUser, observingUser=this.state.me) {
+		const relationship = observedUser.relationships.filter(
+			relationship => (
+				relationship.relationship_id === observingUser.id
+			)
+		)[0];
+		return relationship ? (
+			this.state.privacyLevels[relationship.privacyLevelId]
+		) : this.state.privacyLevels[4];
+	}
+
+	observableUserTags(observedUser, observingUser=this.state.me) {
+		return this.state.tags.filter(
+			({ id, name }) => (
+				pluck(
+					this.state.userTags.filter(
+						({ userId, tagId, privacyLevelId }) => (
+							userId === observedUser.id &&
+							(
+								privacyLevelId >= this.getObserverPrivacylevel(observedUser, observingUser).id ||
+								userId === observingUser.id
+							)
+						)
+					),
+					'tagId'
+				).indexOf(id) !== -1
+			)
+		);
+	}
+
 	/* Users
 	********/
 	getUsers() {
@@ -156,11 +187,12 @@ class App extends Component {
 	************/
 	hydrateUsers(users) {
 		return users.map(user => {
-			const userTags = this.state.userTags.filter(({ userId, tagId }) => ( userId === user.id ));
-			return {
-				...user,
-				tags: this.state.tags.filter(({ id, name }) => ( pluck(userTags, 'tagId').indexOf(id) !== -1 ))
-			};
+			var hydratedUser = { ...user };
+			hydratedUser.relationships = this.state.userRelationships.filter(relationship => (
+				relationship.userId === user.id
+			));
+			hydratedUser.tags = this.observableUserTags(hydratedUser)
+			return hydratedUser;
 		});
 	}
 
