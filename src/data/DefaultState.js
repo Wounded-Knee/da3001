@@ -2,21 +2,28 @@ const DefaultState = {
   testsLoaded: false,
   testLoadError: false,
   me: {
-    id: 0
+	id: 0
   },
   users: [
-    { id: 0, name: 'Anonymous', avatar: '/userAvatar_0' }
+	{ id: 0, name: 'Anonymous', avatar: '/userAvatar_0' }
   ],
   tags: [],
   userTags: [],
   testTags: [],
   tests: [],
+  privacyLevels: [
+	{ value: 0, name: "Private" },
+	{ value: 1, name: "Close" },
+	{ value: 2, name: "Near" },
+	{ value: 3, name: "Far" },
+	{ value: 4, name: "Public" },
+  ]
 };
 
 // Temporarily generating fake users
 var fauxUser,
 	fauxUserTags = [];
-for (var userId=1; userId<45; userId++) {
+for (var userId=1; userId<22; userId++) {
 	fauxUser = {
 		id: userId, name: "Anon #"+userId, avatar: '/userAvatar_'+Math.floor(Math.random()*5)
 	};

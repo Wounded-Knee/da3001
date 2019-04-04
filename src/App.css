@@ -112,13 +112,15 @@ header {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-image: url('/cinemagraph.gif');
-  height: 12em;
+  height: 14em;
   margin: 0;
   padding-top: 4.5em;
 }
 
-header button {
-  margin: 0 2em;
+header a {
+  display: inline-block;
+  background: #fff;
+  color: #000;
 }
 
 /* Lists -> Tags
@@ -220,6 +222,29 @@ header button {
 .cardFan > li:hover {
   z-index: 10;
 }
+
+/* Privacy Layout
+******************/
+.privacy .cardFan {
+  height: 240px;
+}
+
+.privacy .Private h3 {
+  color: blue;
+}
+.privacy .Close h3 {
+  color: green;
+}
+.privacy .Near h3 {
+  color: yellow;
+}
+.privacy .Far h3 {
+  color: orange;
+}
+.privacy .Public h3 {
+  color: red;
+}
+
 
 /* Clearfix
 ************/

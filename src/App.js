@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Link, Route } from 'react-router-dom';
 import UserList from './UserList.js';
 import TestPromises from './TestPromises.js';
 import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
+import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
 import pluck from 'utils-pluck';
 import './App.css';
@@ -239,6 +240,34 @@ class App extends Component {
 						/>
 					}
 				/>
+
+				<Route
+					path="/privacy"
+					render={
+						routeProps => <PrivacyLayout
+							{...routeProps}
+							privacyLevels={ this.state.privacyLevels }
+							users={
+								[
+									this.getUsers().shuffle().splice(0,3),
+									this.getUsers().shuffle().splice(0,6),
+									this.getUsers().shuffle().splice(0,13),
+									this.getUsers().shuffle().splice(0,23),
+									this.getUsers().shuffle().splice(0,30),
+								]
+							}
+							tags={
+								[
+									this.getMe().tags.splice(0,15),
+									this.getMe().tags.splice(0,8),
+									this.getMe().tags.splice(0,7),
+									this.getMe().tags.splice(0,5),
+									this.getMe().tags.splice(0,3),
+								]
+							}
+						/>
+					}
+				/>
 			</div>
 		);
 	}
@@ -257,6 +286,8 @@ class App extends Component {
 						{/* --- Navigation --- */}
 						<header>
 							<UserList me={ this.getMe() } users={ [this.getMe()] } />
+							<Link to="/">Questions</Link> |
+							<Link to="/privacy">Privacy</Link>
 						</header>
 
 						{/* --- Routes --- */}
@@ -294,3 +325,15 @@ class App extends Component {
 }
 
 export default App;
+
+Array.prototype.shuffle = function() {
+  var i = this.length, j, temp;
+  if ( i == 0 ) return this;
+  while ( --i ) {
+	 j = Math.floor( Math.random() * ( i + 1 ) );
+	 temp = this[i];
+	 this[i] = this[j];
+	 this[j] = temp;
+  }
+  return this;
+}
