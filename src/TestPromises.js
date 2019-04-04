@@ -5,6 +5,7 @@ const TestPromises = [
 	'Test4.js',
 	'Test5.js',
 	'Test6.js',
+	'Test7.js',
 ].map(module => import('./' + module));
 
 export default TestPromises;

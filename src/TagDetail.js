@@ -1,5 +1,6 @@
 import React from 'react';
 import UserList from './UserList.js';
+import TagList from './TagList.js';
 import HDiv from './HDiv.js';
 
 const TagDetail = (props) => {
@@ -7,14 +8,17 @@ const TagDetail = (props) => {
 
 	const {
 		tag,
-		usersWhoHaveTag
+		usersWhoHaveTag,
+		getSiblingTags,
 	} = props;
 
 	return (
 	  <div>
-		<HDiv classNames="tagDetail" title={ "Tag Detail for " + tag.name }>
+		<HDiv classNames="tagDetail" title={ tag.name }>
 			<p>It is a cool tag.</p>
 		</HDiv>
+
+		<TagList tags={ getSiblingTags(tag.test) } />
 
 		<UserList cardFan title="Users who have this tag" users={usersWhoHaveTag} {...props}>
 			<p>Nobody has this tag.</p>
