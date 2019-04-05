@@ -5,6 +5,7 @@ import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
 import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
@@ -18,9 +19,37 @@ class App extends Component {
 		setTimeout(() => window.da3001 = this, 500);
 	}
 
+	componentDidMount() {
+		Promise.all([
+			this.api().getMe()
+		]).then(this.onLoad.bind(this));
+	}
+
+	api() {
+		return {
+			getMe: () => (
+				axios
+					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users/me")
+					.then(res => this.setState({ me: res.data }))
+			)
+		}
+	}
+
+	onLoad() {
+		this.setState((previousState, currentProps) => {
+			if (this.props.onLoad) this.props.onLoad();
+			return {
+				loadStatus: {
+					...previousState.loadStatus,
+					app: true
+				}
+			};
+		});
+	}
+
 	getRoutes() {
 		return (
-			<div className="App-intro">
+			<div className="routes">
 				{/* --- Tag Detail View --- */}
 				<Route
 					path="/tags/:tagId"
@@ -58,12 +87,12 @@ class App extends Component {
 		];
 		return (
 			<BrowserRouter>
-				{ this.state.testsLoaded ?
+				{ this.state.loadStatus.app === true ?
 
 					<div className="App">
 						{/* --- Navigation --- */}
 						<header>
-							<UserList me={ this.getMe() } users={ [this.getMe()] } />
+							<UserList me={ this.state.me } users={ [this.state.me] } />
 							<Link to="/">Questions</Link> |
 							<Link to="/privacy">Privacy</Link>
 						</header>
@@ -71,7 +100,7 @@ class App extends Component {
 						{/* --- Routes --- */}
 						{ this.getRoutes() }
 
-						{/* --- Questions --- */}
+						{/* --- Questions --- 
 						<TestList
 							title="Questions"
 							tests={ this.state.tests }
@@ -79,14 +108,15 @@ class App extends Component {
 							onAnswer={ this.recordAnswer.bind(this) }
 							onInitialize={ this.initializeTest.bind(this) }
 						/>
+						*/}
 					</div>
 
-				: this.state.testLoadError ?
+				: this.state.loadStatus.app instanceof Error ?
 
-					<div>Error loading tests.</div>
+					<div>Error loading application.</div>
 
 				: 'Loading...' }
-
+{/*
 				<iframe
 					className="grayscale"
 					title="video"
@@ -97,6 +127,7 @@ class App extends Component {
 					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen>
 				</iframe>
+*/}
 			</BrowserRouter>
 		);
 	}

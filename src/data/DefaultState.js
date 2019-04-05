@@ -1,17 +1,11 @@
 const DefaultState = {
 	loadStatus: {
 		app: false,
+		me: false,
 		tests: false,
 	},
-	me: {
-	},
-	users: [
-	],
-	tags: [],
-	userTags: [],
-	testTags: [],
+	me: {},
 	tests: [],
-	userRelationships: [],
 	privacyLevels: [
 		{ id: 0, value: 0, name: "Private" },
 		{ id: 1, value: 1, name: "Close" },

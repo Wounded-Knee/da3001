@@ -4,6 +4,7 @@ import tagDisplayMode from './constants.js';
 import PropTypes from 'prop-types';
 
 const User = ({ user, index, style, me }) => {
+	if (user.id === undefined) return "";
 	return (
 		<li style={ style } className={ me && user.id === me.id ? 'me' : '' }>
 			<img src={ user.avatar } alt={ user.name } width="50" />
