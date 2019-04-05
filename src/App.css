@@ -141,6 +141,7 @@ header a {
   white-space: nowrap;
   text-align: left;
   line-height: 1em;
+  background: #fff;
 }
 
 .tagList li.emoji_mode {
