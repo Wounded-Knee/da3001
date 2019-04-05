@@ -1,7 +1,6 @@
 import React from 'react';
 import UserList from './UserList.js';
 import TagList from './TagList.js';
-import Tag from './Tag.js';
 import HDiv from './HDiv.js';
 
 const TagDetail = (props) => {
