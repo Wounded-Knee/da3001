@@ -19,12 +19,12 @@ describe("App", () => {
 	beforeEach(() => {
 	});
 	
-	it("getTestById()", () => {
+	it("Exists", () => {
 		return getComponent().then((component) => {
 			const instance = component.instance();
 			expect(
-				instance.getTestById(0)
-			).to.equal(instance.state.tests[0])
+				typeof instance
+			).to.eq('object')
 		});
 	})
 });

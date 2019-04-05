@@ -21,12 +21,18 @@ class App extends Component {
 
 	componentDidMount() {
 		Promise.all([
+			this.api().getTests(),
 			this.api().getMe()
 		]).then(this.onLoad.bind(this));
 	}
 
 	api() {
 		return {
+			getTests: () => (
+				axios
+					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/tests")
+					.then(res => this.setState({ tests: res.data }))
+			),
 			getMe: () => (
 				axios
 					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users/me")
@@ -45,6 +51,52 @@ class App extends Component {
 				}
 			};
 		});
+	}
+
+	testHelpers() {
+		return {
+			onAnswer: function(testId, answerId) {
+				axios
+					.put("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/tests/"+testId+"/answer/"+answerId)
+					.then(res => this.setState({ newTag: res.data }))
+			}.bind(this)
+		}
+	}
+
+	/* Render
+	********/
+	render() {
+		return (
+			<BrowserRouter>
+				{ this.state.loadStatus.app === true ?
+
+					<div className="App">
+						{/* --- Navigation --- */}
+						<header>
+							<UserList me={ this.state.me } users={ [this.state.me] } />
+							<Link to="/">Questions</Link> |
+							<Link to="/privacy">Privacy</Link>
+						</header>
+
+						{/* --- Routes --- */}
+						{ this.getRoutes() }
+
+						{/* --- Questions --- */}
+						<TestList
+							title="Questions"
+							helpers={ this.testHelpers() }
+							tests={ this.state.tests }
+						/>
+					</div>
+
+				: this.state.loadStatus.app instanceof Error ?
+
+					<div>Error loading application.</div>
+
+				: 'Loading...' }
+
+			</BrowserRouter>
+		);
 	}
 
 	getRoutes() {
@@ -76,59 +128,6 @@ class App extends Component {
 					}
 				/>
 			</div>
-		);
-	}
-
-	/* Render
-	********/
-	render() {
-		const youtubeVideos = [
-			'DWO1pkHgrBM', 'gjY3LxPNaRM', '7xxgRUyzgs0'
-		];
-		return (
-			<BrowserRouter>
-				{ this.state.loadStatus.app === true ?
-
-					<div className="App">
-						{/* --- Navigation --- */}
-						<header>
-							<UserList me={ this.state.me } users={ [this.state.me] } />
-							<Link to="/">Questions</Link> |
-							<Link to="/privacy">Privacy</Link>
-						</header>
-
-						{/* --- Routes --- */}
-						{ this.getRoutes() }
-
-						{/* --- Questions --- 
-						<TestList
-							title="Questions"
-							tests={ this.state.tests }
-							shouldTestRender={ this.shouldTestRender.bind(this) }
-							onAnswer={ this.recordAnswer.bind(this) }
-							onInitialize={ this.initializeTest.bind(this) }
-						/>
-						*/}
-					</div>
-
-				: this.state.loadStatus.app instanceof Error ?
-
-					<div>Error loading application.</div>
-
-				: 'Loading...' }
-{/*
-				<iframe
-					className="grayscale"
-					title="video"
-					width="560"
-					height="315"
-					src={ "https://www.youtube.com/embed/" + youtubeVideos[Math.floor(Math.random()*youtubeVideos.length)] }
-					frameBorder="0"
-					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-					allowFullScreen>
-				</iframe>
-*/}
-			</BrowserRouter>
 		);
 	}
 }
