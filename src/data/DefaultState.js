@@ -5,6 +5,7 @@ const DefaultState = {
 		tests: false,
 	},
 	me: {},
+	relations: [],
 	tests: [],
 	privacyLevels: [
 		{ id: 0, value: 0, name: "Private" },

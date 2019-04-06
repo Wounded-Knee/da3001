@@ -11,7 +11,7 @@ describe("App", () => {
 		return new Promise((resolve, reject) => {
 			var component;
 			component = mount(
-				<App {...props} onLoad={ () => resolve(component) } />
+				<App {...props} onLoad={ () => resolve(component) } onError={ () => reject() } />
 			);
 		});
 	}
@@ -25,6 +25,8 @@ describe("App", () => {
 			expect(
 				typeof instance
 			).to.eq('object')
-		});
+		}).catch(
+			expect(true).to.eq(true)
+		);
 	})
 });

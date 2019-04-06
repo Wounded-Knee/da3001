@@ -23,7 +23,11 @@ class App extends Component {
 		Promise.all([
 			this.api().getTests(),
 			this.api().getMe()
-		]).then(this.onLoad.bind(this));
+		]).then(
+			this.onLoad.bind(this)
+		).catch(
+			this.onError.bind(this)
+		);
 	}
 
 	api() {
@@ -37,6 +41,11 @@ class App extends Component {
 				axios
 					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users/me")
 					.then(res => this.setState({ me: res.data }))
+			),
+			getRelations: () => (
+				axios
+					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users")
+					.then(res => this.setState({ relations: res.data }))
 			),
 		}
 	}
@@ -64,6 +73,18 @@ class App extends Component {
 		});
 	}
 
+	onError(error) {
+		this.setState((previousState, currentProps) => {
+			if (this.props.onError) this.props.onError(error);
+			return {
+				loadStatus: {
+					...previousState.loadStatus,
+					app: error
+				}
+			};
+		});
+	}
+
 	onLoad() {
 		this.setState((previousState, currentProps) => {
 			if (this.props.onLoad) this.props.onLoad();
@@ -81,7 +102,8 @@ class App extends Component {
 			onAnswer: function(testId, answerId) {
 				axios
 					.put("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/tests/"+testId+"/answer/"+answerId)
-					.then(res => this.assimilateTag(res.data))
+					.then(res => this.assimilateTag(res.data));
+				this.api().getTests();
 			}.bind(this)
 		}
 	}
@@ -97,7 +119,7 @@ class App extends Component {
 						{/* --- Navigation --- */}
 						<header>
 							<UserList me={ this.state.me } users={ [this.state.me] } />
-							<Link to="/">Questions</Link> |
+							<Link to="/">Questions</Link> -
 							<Link to="/privacy">Privacy</Link>
 						</header>
 
@@ -114,10 +136,15 @@ class App extends Component {
 
 				: this.state.loadStatus.app instanceof Error ?
 
-					<div>Error loading application.</div>
+					<div id="error">
+						<p>Error loading application.</p>
+					</div>
 
-				: 'Loading...' }
-
+				:
+					<div className="App loading">
+						<p>Loading...</p>
+					</div>
+				}
 			</BrowserRouter>
 		);
 	}
@@ -142,12 +169,17 @@ class App extends Component {
 				<Route
 					path="/privacy"
 					render={
-						routeProps => <PrivacyLayout
-							{...routeProps}
-							privacyLevels={ this.state.privacyLevels }
-							users={[]}
-							tags={[]}
-						/>
+						routeProps => {
+							this.api().getRelations();
+							return (
+								<PrivacyLayout
+									{...routeProps}
+									privacyLevels={ this.state.privacyLevels }
+									users={ this.state.relations }
+									tags={[]}
+								/>
+							);
+						}
 					}
 				/>
 			</div>
