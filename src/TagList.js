@@ -5,7 +5,7 @@ import HDiv from './HDiv.js';
 const TagList = ({ title, tags, children, displayMode }) => {
 	const visibleTags = tags.filter(tag => tag.name.indexOf('undefined') === -1);
 	return (
-		<HDiv classNames="tagList" title={ title }>
+		<HDiv classNames="tagList grayscale" title={ title }>
 			{
 				visibleTags.length ?
 					<ul className="clearfix">

@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Route } from 'react-router-dom';
 import UserList from './UserList.js';
 import TestPromises from './TestPromises.js';
 import TagDetail from './TagDetail.js';
+import TagsLayout from './TagsLayout.js';
 import TestList from './TestList.js';
 import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
@@ -274,6 +275,16 @@ class App extends Component {
 				/>
 
 				<Route
+					path="/tags"
+					render={
+						routeProps => <TagsLayout
+							{...routeProps}
+							tags={ this.state.tags }
+						/>
+					}
+				/>
+
+				<Route
 					path="/privacy"
 					render={
 						routeProps => <PrivacyLayout
@@ -319,6 +330,7 @@ class App extends Component {
 						<header>
 							<UserList me={ this.getMe() } users={ [this.getMe()] } />
 							<Link to="/">Questions</Link> |
+							<Link to="/tags">Tags</Link> |
 							<Link to="/privacy">Privacy</Link>
 						</header>
 

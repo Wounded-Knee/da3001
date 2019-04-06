@@ -35,7 +35,7 @@ h1, h2, h3, h4, h5, h6, p {
   border-radius: 6px;
   overflow: hidden;
   border: 1px outset;
-  box-shadow: 0px 3px 3px 0px rgba(0,0,0,.3);
+  box-shadow: 0px 1px 4px -1px rgba(0,0,0,.6)
 }
 .userList .tagList li {
   box-shadow: none;
@@ -109,9 +109,10 @@ button:active {
 /* App -> Header
 *******************/
 header {
+  background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
-  background-image: url('/cinemagraph.gif');
+  background-image: url('/background.jpg');
   height: 15em;
   margin: 0;
   padding-top: 2.5em;
@@ -132,7 +133,7 @@ header a {
 
 .tagList li {
   display: inline-block;
-  border: 1px solid black;
+  border: 1px outset #aaa; 
   border-radius: 4px;
   padding: 4px;
   margin: 4px;
@@ -141,12 +142,23 @@ header a {
   white-space: nowrap;
   text-align: left;
   line-height: 1em;
-  background: #fff;
+
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f2f5f6+0,eaeaea+37,d7d7d7+100 */
+  background: rgb(242,245,246); /* Old browsers */
+  background: -moz-linear-gradient(top, rgba(242,245,246,1) 0%, rgba(234,234,234,1) 37%, rgba(215,215,215,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, rgba(242,245,246,1) 0%,rgba(234,234,234,1) 37%,rgba(215,215,215,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, rgba(242,245,246,1) 0%,rgba(234,234,234,1) 37%,rgba(215,215,215,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f6', endColorstr='#d7d7d7',GradientType=0 ); /* IE6-9 */
 }
 
 .tagList li.emoji_mode {
   width: auto;
 }
+
+.tagList li.super {
+  background: #fff;
+}
+
 
 /* Lists -> Users
 *****************/
@@ -205,7 +217,7 @@ header a {
 }
 
 .testList ul li button {
-  margin: 0 0.5em;
+  margin: 0.5em;
 }
 
 /* Card Fan

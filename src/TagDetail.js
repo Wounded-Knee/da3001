@@ -20,6 +20,10 @@ const TagDetail = (props) => {
 
 		<TagList tags={ getSiblingTags(tag.test) } />
 
+		<HDiv title="Subtags">
+			<p>...</p>
+		</HDiv>
+
 		<UserList cardFan title="Users who have this tag" users={usersWhoHaveTag} {...props}>
 			<p>Nobody has this tag.</p>
 		</UserList>
