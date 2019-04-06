@@ -16,7 +16,7 @@ class App extends Component {
 		this.state = DefaultState;
 
 		// Scope pointer for debuggery
-		setTimeout(() => window.da3001 = this, 500);
+		window.da3001 = function() { return this.state; }.bind(this);
 	}
 
 	componentDidMount() {
@@ -37,8 +37,31 @@ class App extends Component {
 				axios
 					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users/me")
 					.then(res => this.setState({ me: res.data }))
-			)
+			),
 		}
+	}
+
+	assimilateTag(tagData) {
+		return new Promise((resolve, reject) => {
+			this.setState((previousState, currentprops) => {
+				if (previousState.me.tags.filter(tag => tag.id === tagData.id).length) {
+					reject('Tag already exists!');
+					return new Error('Tag already exists.');
+				} else {
+					const newState = {
+						me: {
+							...previousState.me,
+							tags: [
+								...previousState.me.tags,
+								tagData
+							]
+						}
+					};
+					resolve(newState);
+					return newState;
+				}
+			});
+		});
 	}
 
 	onLoad() {
@@ -58,7 +81,7 @@ class App extends Component {
 			onAnswer: function(testId, answerId) {
 				axios
 					.put("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/tests/"+testId+"/answer/"+answerId)
-					.then(res => this.setState({ newTag: res.data }))
+					.then(res => this.assimilateTag(res.data))
 			}.bind(this)
 		}
 	}
