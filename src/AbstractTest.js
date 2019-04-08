@@ -5,8 +5,8 @@ class AbstractTest extends Component {
 		super(props);
 		this.testData = props.testData;
 		// Add emoji to answers
-		this.testData.answers = this.testData.answers.map(
-			answer => ({
+			question,
+			tags,
 				...answer,
 				tag: this.getEmoji() + ' ' + answer.tag
 			})
@@ -19,6 +19,7 @@ class AbstractTest extends Component {
 
 	assignGlobalIdToTag(answerIndex, globalTagId) {
 		this.testData.answers[answerIndex].globalTagId = globalTagId;
+				<p className="question">{ question }</p>
 	}
 
 	getEmoji() {

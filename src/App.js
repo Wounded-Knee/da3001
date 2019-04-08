@@ -16,12 +16,9 @@ class App extends Component {
 
 		// Setup state
 		this.state = DefaultState;
-
 		// Handle promises for test module loading
 		this.awaitTestPromises();
 
-		// Scope pointer for debuggery
-		setTimeout(() => window.da3001 = this, 500);
 	}
 
 	awaitTestPromises() {
@@ -43,9 +40,7 @@ class App extends Component {
 
 		Promise.all(TestPromises).then(
 			onImportAllTests
-		).catch(
 			onImportAllTests
-		);
 	}
 
 	initializeTest({ TestClass, testInstance }) {
@@ -69,12 +64,17 @@ class App extends Component {
 									testId: this.getIdByTestClass(TestClass),
 									tagId: globalTagId
 								}
-							]
-						}
+								]
+			),
 					});
 				}
 			)
-		});
+		this.setState((previousState, currentProps) => {
+			return {
+				...previousState,
+				me: me
+			}
+		})
 	}
 
 	/* Tests
@@ -265,12 +265,18 @@ class App extends Component {
 				<Route
 					path="/tags/:tagId"
 					render={
-						routeProps => <TagDetail
-							{...routeProps}
-							getSiblingTags={ this.getTagsByTest.bind(this) }
-							tag={ this.getTagById(routeProps.match.params.tagId) }
-							usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
-						/>
+						routeProps => {
+							const tagId = parseInt(routeProps.match.params.tagId);
+							const tag = this.state.tags.filter(tag => tag.id === tagId)[0];
+							if (!tag) this.api().getTag(tagId);
+							return (
+								<TagDetail
+									{...routeProps}
+									tag={ tag }
+									usersWhoHaveTag={ [] }
+								/>
+							);
+						}
 					}
 				/>
 

@@ -13,6 +13,8 @@ h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
 
+  min-width: 101%;
+  min-height: 101%;
 /* Grayscale
 *************/
 .grayscale,

@@ -9,16 +9,15 @@ const TagDetail = (props) => {
 	const {
 		tag,
 		usersWhoHaveTag,
-		getSiblingTags,
 	} = props;
 
 	return (
 	  <div>
 		<HDiv classNames="tagDetail" title={ <TagList tags={ [tag] } /> }>
-			<p>{ tag.test.testInstance.getQuestion() }</p>
+			<p>{ tag.question }</p>
 		</HDiv>
 
-		<TagList tags={ getSiblingTags(tag.test) } />
+		<TagList tags={ [] } />
 
 		<HDiv title="Subtags">
 			<p>...</p>
