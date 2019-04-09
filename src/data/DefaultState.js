@@ -4,7 +4,9 @@ const DefaultState = {
 		me: false,
 		tests: false,
 	},
+	api: 'http://joshua.local:3001',
 	me: {},
+	tags: [],
 	relations: [],
 	tests: [],
 	privacyLevels: [
