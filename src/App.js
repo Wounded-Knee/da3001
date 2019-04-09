@@ -6,6 +6,7 @@ import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
 import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
+import ComposeTest from './ComposeTest.js';
 import axios from 'axios';
 import './App.css';
 
@@ -153,6 +154,9 @@ class App extends Component {
 								tests={ this.state.tests }
 							/>
 						</Ajax>
+
+						{/* --- Test Composer --- */}
+						<ComposeTest />
 					</div>
 
 				: this.state.loadStatus.app instanceof Error ?

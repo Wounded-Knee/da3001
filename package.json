@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "chai": "^4.2.0",
+    "emoji-mart": "^2.11.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.2",
     "react": "^16.8.6",
