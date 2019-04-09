@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
+import Ajax from './Ajax.js';
 import UserList from './UserList.js';
 import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
@@ -14,40 +15,61 @@ class App extends Component {
 
 		// Setup state
 		this.state = DefaultState;
-
-		// Scope pointer for debuggery
-		window.da3001 = function() { return this.state; }.bind(this);
 	}
 
 	componentDidMount() {
-		Promise.all([
-			this.api().getTests(),
-			this.api().getMe()
-		]).then(
-			this.onLoad.bind(this)
-		).catch(
-			this.onError.bind(this)
-		);
+		this.onLoad();
 	}
 
 	api() {
 		return {
+			getUrl: () => this.state.api,
 			getTests: () => (
-				axios
-					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/tests")
+				this.ajax('get', this.api().getUrl()+"/tests")
 					.then(res => this.setState({ tests: res.data }))
+					.catch(err => {})
 			),
 			getMe: () => (
-				axios
-					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users/me")
+				this.ajax('get', this.api().getUrl()+"/users/me")
 					.then(res => this.setState({ me: res.data }))
 			),
 			getRelations: () => (
-				axios
-					.get("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/users")
+				this.ajax('get', this.api().getUrl()+"/users")
 					.then(res => this.setState({ relations: res.data }))
 			),
+			getTag: tagId => (
+				this.ajax('get', this.api().getUrl()+"/tag/"+tagId)
+					.then(res => {
+						this.setState((previousState, currentProps) => {
+							return {
+								tags: [
+									...previousState.tags.filter(tag => tag.id !== tagId),
+									res.data
+								]
+							};
+						})
+					})
+			),
 		}
+	}
+
+	testHelpers() {
+		return {
+			onAnswer: function(testId, answerId) {
+				this.ajax('put', this.api().getUrl()+"/tests/"+testId+"/answer/"+answerId)
+					.then(res => this.assimilateTag(res.data));
+				this.api().getTests();
+			}.bind(this)
+		}
+	}
+
+	ajax(httpMethod, url) {
+		const args = [url];
+		if (['put', 'patch', 'post'].indexOf(httpMethod) !== -1) args.push(undefined);
+		args.push({
+			withCredentials: true,
+		});
+		return axios[httpMethod](...args);
 	}
 
 	assimilateTag(tagData) {
@@ -60,10 +82,7 @@ class App extends Component {
 					const newState = {
 						me: {
 							...previousState.me,
-							tags: [
-								...previousState.me.tags,
-								tagData
-							]
+							tags: tagData.me.tags,
 						}
 					};
 					resolve(newState);
@@ -71,6 +90,15 @@ class App extends Component {
 				}
 			});
 		});
+	}
+
+	assimilateMe(me) {
+		this.setState((previousState, currentProps) => {
+			return {
+				...previousState,
+				me: me
+			}
+		})
 	}
 
 	onError(error) {
@@ -97,17 +125,6 @@ class App extends Component {
 		});
 	}
 
-	testHelpers() {
-		return {
-			onAnswer: function(testId, answerId) {
-				axios
-					.put("https://c53b9df7-65bc-422a-8167-3a4f8018cfbc.mock.pstmn.io/tests/"+testId+"/answer/"+answerId)
-					.then(res => this.assimilateTag(res.data));
-				this.api().getTests();
-			}.bind(this)
-		}
-	}
-
 	/* Render
 	********/
 	render() {
@@ -118,7 +135,9 @@ class App extends Component {
 					<div className="App">
 						{/* --- Navigation --- */}
 						<header>
-							<UserList me={ this.state.me } users={ [this.state.me] } />
+							<Ajax fetch={ this.api().getMe }>
+								<UserList me={ this.state.me } users={ [this.state.me] } />
+							</Ajax>
 							<Link to="/">Questions</Link> -
 							<Link to="/privacy">Privacy</Link>
 						</header>
@@ -127,11 +146,13 @@ class App extends Component {
 						{ this.getRoutes() }
 
 						{/* --- Questions --- */}
-						<TestList
-							title="Questions"
-							helpers={ this.testHelpers() }
-							tests={ this.state.tests }
-						/>
+						<Ajax fetch={ this.api().getTests }>
+							<TestList
+								title="Questions"
+								helpers={ this.testHelpers() }
+								tests={ this.state.tests }
+							/>
+						</Ajax>
 					</div>
 
 				: this.state.loadStatus.app instanceof Error ?
@@ -156,12 +177,18 @@ class App extends Component {
 				<Route
 					path="/tags/:tagId"
 					render={
-						routeProps => <TagDetail
-							{...routeProps}
-							getSiblingTags={ this.getTagsByTest.bind(this) }
-							tag={ this.getTagById(routeProps.match.params.tagId) }
-							usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
-						/>
+						routeProps => {
+							const tagId = parseInt(routeProps.match.params.tagId);
+							return (
+								<Ajax fetch={ this.api().getTag } args={ [tagId] }>
+									<TagDetail
+										{...routeProps}
+										tag={ this.state.tags.filter(tag => tag.id === tagId)[0] }
+										usersWhoHaveTag={ [] }
+									/>
+								</Ajax>
+							);
+						}
 					}
 				/>
 
@@ -169,17 +196,16 @@ class App extends Component {
 				<Route
 					path="/privacy"
 					render={
-						routeProps => {
-							this.api().getRelations();
-							return (
+						routeProps => (
+							<Ajax fetch={ this.api().getRelations }>
 								<PrivacyLayout
 									{...routeProps}
 									privacyLevels={ this.state.privacyLevels }
 									users={ this.state.relations }
 									tags={[]}
 								/>
-							);
-						}
+							</Ajax>
+						)
 					}
 				/>
 			</div>

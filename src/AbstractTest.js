@@ -5,16 +5,17 @@ class AbstractTest extends Component {
 		const helpers = this.props.helpers;
 		const {
 			id,
-			data,
+			question,
+			tags,
 		} = this.props.data;
 
 		return (
 			<li>
-				<p className="question">{ data.question.text }</p>
+				<p className="question">{ question }</p>
 				{
-					data.answer.options.map(
-						(answerOption, index) => (
-							<button key={ index } onClick={ () => helpers.onAnswer(id, answerOption.id) }>{ answerOption.text }</button>
+					tags.map(
+						(tag, index) => (
+							<button key={ index } onClick={ () => helpers.onAnswer(id, tag.id) }>{ tag.choice }</button>
 						)
 					)
 				}
