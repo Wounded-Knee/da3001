@@ -14,13 +14,13 @@ const TagDetail = (props) => {
 	return (
 	  <div>
 		<HDiv classNames="tagDetail" title={ <TagList tags={ [tag] } /> }>
-			<p>{ tag.question }</p>
+			<p>{ tag.summary }</p>
 		</HDiv>
 
 		<TagList tags={ [] } />
 
 		<UserList cardFan title="Users who have this tag" users={usersWhoHaveTag} {...props}>
-			<p>Nobody has this tag.</p>
+			<p>The system does not yet understand who else has this tag.</p>
 		</UserList>
 	  </div>
 	);
