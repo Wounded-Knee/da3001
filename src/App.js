@@ -301,6 +301,8 @@ class App extends Component {
 											{...routeProps}
 											privacyLevels={ this.state.privacyLevels }
 											users={ this.state.relations }
+											me={ this.state.me }
+											helpers={ this.testHelpers() }
 											tags={[]}
 										/>
 									</Ajax>
@@ -310,7 +312,6 @@ class App extends Component {
 					</div>
 
 				: this.state.loadStatus.app instanceof Error ?
-							<Link to="/tags">Tags</Link> |
 
 					<div id="error">
 						<p>Error loading application.</p>
