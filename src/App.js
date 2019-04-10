@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Link, Route } from 'react-router-dom';
-import UserList from './UserList.js';
-import TestPromises from './TestPromises.js';
+import { BrowserRouter, NavLink, Route } from 'react-router-dom';
+import Ajax from './Ajax.js';
+import User from './User.js';
 import TagDetail from './TagDetail.js';
 import TagsLayout from './TagsLayout.js';
 import TestList from './TestList.js';
 import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
-import pluck from 'utils-pluck';
+import ComposeTest from './ComposeTest.js';
+import UserLayout from './UserLayout.js';
+import consts from './constants.js';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
@@ -16,265 +19,270 @@ class App extends Component {
 
 		// Setup state
 		this.state = DefaultState;
-
-		// Handle promises for test module loading
-		this.awaitTestPromises();
-
-		// Scope pointer for debuggery
-		setTimeout(() => window.da3001 = this, 500);
 	}
 
-	awaitTestPromises() {
-		const onImportAllTests = testPromises => {
-			this.setState((previousState, currentProps) => {
-				if (this.props.onLoad) this.props.onLoad();
-				var testId = previousState.tests.length;
-				return {
-					tests: testPromises ? testPromises.map((testPromise, index) => ({
-						id: testId + index,
-						TestClass: testPromise.default,
-						testInstance: undefined,
-					})) : [],
-					testsLoaded: !!testPromises,
-					testLoadError: !testPromises
-				};
-			});
-		};
-
-		Promise.all(TestPromises).then(
-			onImportAllTests
-		).catch(
-			onImportAllTests
-		);
+	componentDidMount() {
+		this.onLoad();
 	}
 
-	initializeTest({ TestClass, testInstance }) {
-		pluck(testInstance.getAnswers(), 'tag').map((tagName, index) => {
-			return this.createTag(
-				tagName,
-				globalTagId => {
-					testInstance.assignGlobalIdToTag(index, globalTagId);
-					this.setState((previousState, currentProps) => {
-						return {
-							...previousState,
-							tests: [
-								...(previousState.tests.map(test => ({
-									...test,
-									testInstance: (test.TestClass === TestClass) ? testInstance : test.testInstance
-								})))
-							],
-							testTags: [
-								...previousState.testTags,
-								{
-									testId: this.getIdByTestClass(TestClass),
-									tagId: globalTagId
-								}
-							]
-						}
+	api() {
+		return {
+			getUrl: () => this.state.api,
+			getTests: () => (
+				this.ajax('get', this.api().getUrl()+"/tests")
+					.then(res => this.setState({ tests: res.data }))
+					.catch(err => {})
+			),
+			getMe: () => (
+				this.ajax('get', this.api().getUrl()+"/users/me")
+					.then(res => this.setState({ me: res.data }))
+			),
+			getUser: function(userId) {
+				this.ajax('get', this.api().getUrl()+'/user/'+userId)
+					.then(res => {
+						this.setState((previousState, currentProps) => {
+							return {
+								users: [
+									...previousState.users.filter(user => user.id !== userId),
+									res.data
+								]
+							};
+						})
+					})
+			}.bind(this),
+			getRelations: () => (
+				this.ajax('get', this.api().getUrl()+"/users")
+					.then(res => this.setState({ relations: res.data }))
+			),
+			getTag: tagId => (
+				this.ajax('get', this.api().getUrl()+"/tag/"+tagId)
+					.then(res => {
+						this.setState((previousState, currentProps) => {
+							return {
+								tags: [
+									...previousState.tags.filter(tag => tag.id !== tagId),
+									res.data
+								]
+							};
+						})
+					})
+			),
+		}
+	}
+
+	testHelpers() {
+		return {
+			onAnswer: function(testId, answerId) {
+				this.ajax('put', this.api().getUrl()+"/tests/"+testId+"/answer/"+answerId)
+					.then(res => {
+						this.assimilateTag(res.data);
+						this.api().getTests();
 					});
+			}.bind(this),
+			submitTest: function(testData) {
+				this.ajax('post', this.api().getUrl()+'/tests', testData)
+					.then(res => {
+						this.api().getTests();
+					});
+			}.bind(this),
+			setUserPrivacyLevel: function(userId, privacyLevel_id) {
+				this.ajax('put', this.api().getUrl()+'/user/'+userId+'/privacy/'+privacyLevel_id)
+					.then(res => {
+						this.api().getMe();
+						this.api().getRelations();
+					});
+			}.bind(this)
+		}
+	}
+
+	ajax(httpMethod, url, data) {
+		const args = [url];
+		if (['put', 'patch', 'post'].indexOf(httpMethod) !== -1) args.push(data);
+		args.push({
+			withCredentials: true,
+		});
+		return axios[httpMethod](...args);
+	}
+
+	assimilateTag(tagData) {
+		return new Promise((resolve, reject) => {
+			this.setState((previousState, currentprops) => {
+				if (previousState.me.tags.filter(tag => tag.id === tagData.id).length) {
+					reject('Tag already exists!');
+					return new Error('Tag already exists.');
+				} else {
+					const newState = {
+						me: {
+							...previousState.me,
+							tags: tagData.me.tags,
+						}
+					};
+					resolve(newState);
+					return newState;
 				}
-			)
+			});
 		});
 	}
 
-	/* Tests
-	*********/
-	getIdByTestClass(TestClass) {
-		return this.state.tests.filter(test => test.TestClass === TestClass)[0].id;
-	}
-
-	getTestById(testId) {
-		return this.state.tests.filter(test => test.id === testId)[0];
-	}
-
-	getTestByTag(tag) {
-		return this.getTestById(this.state.testTags.filter(testTag => testTag.tagId === tag.id)[0].testId);
-	}
-
-	/* Tags
-	********/
-	createTag(tagName, registerNewTagIdCallback) {
-		this.setState((previousState, currentProps) => {
-			const globalTagId = Math.max(...pluck(previousState.tags, 'id'), -1)+1;
-			registerNewTagIdCallback(globalTagId);
-			return {
-				...previousState,
-				tags: [
-					...previousState.tags,
-					{
-						id: globalTagId,
-						name: tagName
-					}
-				]
-			};
-		});
-	}
-
-	getTagById(globalTagId) {
-		return this.getTagsById([ parseInt(globalTagId) ])[0];
-	}
-
-	getTagsById(globalTagIds) {
-		return this.hydrateTags(this.state.tags.filter(tag => globalTagIds.indexOf(tag.id) !== -1));
-	}
-
-	hydrateTags(tags) {
-		return tags.map(tag => ({
-			...tag,
-			test: this.getTestByTag(tag)
-		}));
-	}
-
-	getTagsByTest(test) {
-		return this.hydrateTags(
-			this.getTagsById(
-				pluck(
-					this.state.testTags.filter(testTag => testTag.testId === test.id),
-					'tagId'
-				)
-			)
-		);
-	}
-
-	getObserverPrivacylevel(observedUser, observingUser=this.state.me) {
-		const relationship = observedUser.relationships.filter(
-			relationship => (
-				relationship.relationship_id === observingUser.id
-			)
-		)[0];
-		return relationship ? (
-			this.state.privacyLevels[relationship.privacyLevelId]
-		) : this.state.privacyLevels[4];
-	}
-
-	observableUserTags(observedUser, observingUser=this.state.me) {
-		return this.state.tags.filter(
-			({ id, name }) => (
-				pluck(
-					this.state.userTags.filter(
-						({ userId, tagId, privacyLevelId }) => (
-							userId === observedUser.id &&
-							(
-								privacyLevelId >= this.getObserverPrivacylevel(observedUser, observingUser).id ||
-								userId === observingUser.id
-							)
-						)
-					),
-					'tagId'
-				).indexOf(id) !== -1
-			)
-		);
-	}
-
-	/* Users
-	********/
-	getUsers() {
-		return this.hydrateUsers(this.state.users);
-	}
-
-	getUserById(id) {
-		return this.getUsersById([id])[0];
-	}
-
-	getUsersById(ids) {
-		return this.hydrateUsers(this.state.users.filter(( user ) => ( ids.indexOf(user.id) !== -1 )));
-	}
-
-	getMe() {
-		return this.getUserById(this.state.me.id);
-	}
-
-	/* User Tags
-	************/
-	hydrateUsers(users) {
-		return users.map(user => {
-			var hydratedUser = { ...user };
-			hydratedUser.relationships = this.state.userRelationships.filter(relationship => (
-				relationship.userId === user.id
-			));
-			hydratedUser.tags = this.observableUserTags(hydratedUser)
-			return hydratedUser;
-		});
-	}
-
-	giveTagToMe(globalTagId) {
-		this.giveTagToUser(this.getMe(), globalTagId);
-	}
-
-	giveTagToUser(user, globalTagId) {
+	assimilateMe(me) {
 		this.setState((previousState, currentProps) => {
 			return {
 				...previousState,
-				userTags: [
-					...previousState.userTags,
-					{
-						userId: user.id,
-						tagId: globalTagId
-					}
-				]
+				me: me
 			}
 		})
 	}
 
-	/*
-	 * Receives an array of globalTagIds,
-	 * removes globalTagIds which the targeted user does not have,
-	 * returns the changed array
-	 *
-	 * Except it does not change the array, it creates a new one.
-	 **/
-	tagsUserHas(user, globalTagIds) {
-		// Todo: Limit number of id checks for privacy
-		const userTags = pluck(user.tags, 'id');
-		return globalTagIds.filter(tagId => userTags.indexOf(tagId) !== -1);
+	onError(error) {
+		this.setState((previousState, currentProps) => {
+			if (this.props.onError) this.props.onError(error);
+			return {
+				loadStatus: {
+					...previousState.loadStatus,
+					app: error
+				}
+			};
+		});
 	}
 
-	tagsIHave(globalTagIds) {
-		return this.tagsUserHas(this.getMe(), globalTagIds);
+	onLoad() {
+		this.setState((previousState, currentProps) => {
+			if (this.props.onLoad) this.props.onLoad();
+			return {
+				loadStatus: {
+					...previousState.loadStatus,
+					app: true
+				}
+			};
+		});
 	}
 
-	usersWhoHaveTag(globalTagId) {
-		const userTags = this.state.userTags.filter(userTag => userTag.tagId === parseInt(globalTagId));
-		const idsOfUsersWhoHaveTheTag = pluck(userTags, 'userId');
-		const usersWhoHaveTag = this.getUsersById(idsOfUsersWhoHaveTheTag);
-		return usersWhoHaveTag;
-	}
-
-	/* Misc
+	/* Render
 	********/
-	recordAnswer(answer) {
-		this.giveTagToMe(answer.globalTagId);
-	}
-
-	/* Render Helpers
-	***************/
-	shouldTestRender(test) {
-		const tagsInTest = pluck(test.getAnswers(), 'globalTagId');
-		const dependsOnTags = test.dependsOnTags();
+	render() {
 		return (
-			test.shouldTestRender(this.tagsIHave(dependsOnTags)) &&
-			this.tagsIHave(tagsInTest).length === 0 &&
-			true
-		);
-	}
+			<BrowserRouter>
+				{ this.state.loadStatus.app === true ?
 
-	getRoutes() {
-		return (
-			<div className="App-intro">
-				{/* --- Tag Detail View --- */}
-				<Route
-					path="/tags/:tagId"
-					render={
-						routeProps => <TagDetail
-							{...routeProps}
-							getSiblingTags={ this.getTagsByTest.bind(this) }
-							tag={ this.getTagById(routeProps.match.params.tagId) }
-							usersWhoHaveTag={ this.usersWhoHaveTag(routeProps.match.params.tagId) }
+					<div className="App">
+						{/* --- Navigation --- */}
+						<header>
+
+							<Route
+								path="/"
+								render={
+									routeProps => (
+										<Ajax fetch={ this.api().getMe }>
+											{ routeProps.location.pathname === '/me' ?
+												<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.FACE } helpers={ this.testHelpers() } />
+												:
+												<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.CARD } helpers={ this.testHelpers() } />
+											}
+										</Ajax>
+									)
+								}
+							/>
+
+							<NavLink activeClassName="active" to="/me">Me</NavLink>
+							&nbsp;|&nbsp;
+							<NavLink activeClassName="active" to="/" exact>Answer</NavLink>
+							&nbsp;|&nbsp;
+							<NavLink activeClassName="active" to="/ask">Ask</NavLink>
+							&nbsp;|&nbsp;
+							<NavLink activeClassName="active" to="/privacy">Privacy</NavLink>
+
+						</header>
+
+						{/* --- Tag Detail View --- */}
+						<Route
+							path="/tags/:tagId"
+							render={
+								routeProps => {
+									const tagId = parseInt(routeProps.match.params.tagId);
+									return (
+										<Ajax fetch={ this.api().getTag } args={ [tagId] }>
+											<TagDetail
+												{...routeProps}
+												tag={ this.state.tags.filter(tag => tag.id === tagId)[0] }
+												usersWhoHaveTag={ [] }
+											/>
+										</Ajax>
+									);
+								}
+							}
 						/>
-					}
-				/>
 
-				<Route
+						{/* --- Answer View (index) --- */}
+						<Route
+							path="/"
+							exact
+							render={
+								routeProps => {
+									return (
+										<Ajax fetch={ this.api().getTests }>
+											<TestList
+												title="Questions"
+												helpers={ this.testHelpers() }
+												tests={ this.state.tests }
+											/>
+										</Ajax>
+									)
+								}
+							}
+						/>
+
+						{/* --- Compose Test View (index) --- */}
+						<Route
+							path="/ask"
+							render={
+								routeProps => {
+									return ( <ComposeTest helpers={ this.testHelpers() } /> )
+								}
+							}
+						/>
+
+						{/* --- Me Detail View --- */}
+						<Route
+							path="/me"
+							render={
+								routeProps => (
+									<Ajax fetch={ this.api().getRelations }>
+										<UserLayout
+											{...routeProps}
+											user={ this.state.me }
+											me={ this.state.me }
+											title={ this.state.me.name }
+											helpers={ this.testHelpers() }
+										/>
+									</Ajax>
+								)
+							}
+						/>
+
+						{/* --- User Detail View --- */}
+						<Route
+							path="/user/:userId"
+							render={
+								routeProps => {
+									const userId = parseInt(routeProps.match.params.userId);
+									const user = this.state.users.filter(user => user.id === userId)[0] || {};
+									return (
+										<Ajax fetch={ this.api().getUser } args={ [userId] }>
+											<UserLayout
+												{...routeProps}
+												user={ user }
+												me={ this.state.me }
+												title={ user.name || '' }
+												helpers={ this.testHelpers() }
+											/>
+										</Ajax>
+									);
+								}
+							}
+						/>
+
+						{/* --- Privacy View --- */}
+						<Route
 					path="/tags"
 					render={
 						routeProps => <TagsLayout
@@ -285,99 +293,37 @@ class App extends Component {
 				/>
 
 				<Route
-					path="/privacy"
-					render={
-						routeProps => <PrivacyLayout
-							{...routeProps}
-							privacyLevels={ this.state.privacyLevels }
-							users={
-								[
-									this.getUsers().shuffle().splice(0,3),
-									this.getUsers().shuffle().splice(0,6),
-									this.getUsers().shuffle().splice(0,13),
-									this.getUsers().shuffle().splice(0,23),
-									this.getUsers().shuffle().splice(0,30),
-								]
+							path="/privacy"
+							render={
+								routeProps => (
+									<Ajax fetch={ this.api().getRelations }>
+										<PrivacyLayout
+											{...routeProps}
+											privacyLevels={ this.state.privacyLevels }
+											users={ this.state.relations }
+											tags={[]}
+										/>
+									</Ajax>
+								)
 							}
-							tags={
-								[
-									this.getMe().tags.splice(0,15),
-									this.getMe().tags.splice(0,8),
-									this.getMe().tags.splice(0,7),
-									this.getMe().tags.splice(0,5),
-									this.getMe().tags.splice(0,3),
-								]
-							}
-						/>
-					}
-				/>
-			</div>
-		);
-	}
-
-	/* Render
-	********/
-	render() {
-		const youtubeVideos = [
-			'DWO1pkHgrBM', 'gjY3LxPNaRM', '7xxgRUyzgs0'
-		];
-		return (
-			<BrowserRouter>
-				{ this.state.testsLoaded ?
-
-					<div className="App">
-						{/* --- Navigation --- */}
-						<header>
-							<UserList me={ this.getMe() } users={ [this.getMe()] } />
-							<Link to="/">Questions</Link> |
-							<Link to="/tags">Tags</Link> |
-							<Link to="/privacy">Privacy</Link>
-						</header>
-
-						{/* --- Routes --- */}
-						{ this.getRoutes() }
-
-						{/* --- Questions --- */}
-						<TestList
-							title="Questions"
-							tests={ this.state.tests }
-							shouldTestRender={ this.shouldTestRender.bind(this) }
-							onAnswer={ this.recordAnswer.bind(this) }
-							onInitialize={ this.initializeTest.bind(this) }
 						/>
 					</div>
 
-				: this.state.testLoadError ?
+				: this.state.loadStatus.app instanceof Error ?
+							<Link to="/tags">Tags</Link> |
 
-					<div>Error loading tests.</div>
+					<div id="error">
+						<p>Error loading application.</p>
+					</div>
 
-				: 'Loading...' }
-
-				<iframe
-					className="grayscale"
-					title="video"
-					width="560"
-					height="315"
-					src={ "https://www.youtube.com/embed/" + youtubeVideos[Math.floor(Math.random()*youtubeVideos.length)] }
-					frameBorder="0"
-					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-					allowFullScreen>
-				</iframe>
+				:
+					<div className="App loading">
+						<p>Loading...</p>
+					</div>
+				}
 			</BrowserRouter>
 		);
 	}
 }
 
 export default App;
-
-Array.prototype.shuffle = function() {
-  var i = this.length, j, temp;
-  if ( i == 0 ) return this;
-  while ( --i ) {
-	 j = Math.floor( Math.random() * ( i + 1 ) );
-	 temp = this[i];
-	 this[i] = this[j];
-	 this[j] = temp;
-  }
-  return this;
-}

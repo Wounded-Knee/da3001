@@ -4,28 +4,27 @@ import TagList from './TagList.js';
 import HDiv from './HDiv.js';
 
 const TagDetail = (props) => {
-	if (!props.tag) return 'Error. No tag found at TagDetail.js.';
+	if (!props.tag) return '';
 
 	const {
 		tag,
 		usersWhoHaveTag,
-		getSiblingTags,
 	} = props;
 
 	return (
 	  <div>
 		<HDiv classNames="tagDetail" title={ <TagList tags={ [tag] } /> }>
-			<p>{ tag.test.testInstance.getQuestion() }</p>
+			<p>{ tag.summary }</p>
 		</HDiv>
 
-		<TagList tags={ getSiblingTags(tag.test) } />
+		<TagList tags={ [] } />
 
 		<HDiv title="Subtags">
 			<p>...</p>
 		</HDiv>
 
 		<UserList cardFan title="Users who have this tag" users={usersWhoHaveTag} {...props}>
-			<p>Nobody has this tag.</p>
+			<p>The system does not yet understand who else has this tag.</p>
 		</UserList>
 	  </div>
 	);

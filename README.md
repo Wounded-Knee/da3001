@@ -1,3 +1,9 @@
+# Author's Minutae
+
+https://stackoverflow.com/questions/7813030/how-can-i-have-linked-dependencies-in-a-git-repo
+
+# React Boilerplate
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

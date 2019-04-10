@@ -1,4 +1,5 @@
 import React from 'react';
+import AbstractTest from './AbstractTest.js';
 import HDiv from './HDiv.js';
 
 const TestList = (props) => {
@@ -13,7 +14,11 @@ const TestList = (props) => {
 			{
 				tests.length ?
 					<ul className="clearfix">
-						{ tests.map(({ id, TestClass }) => <TestClass key={ id } testClass={ TestClass } {...props} />) }
+						{
+							tests.map(
+								test => <AbstractTest key={ test.id } data={ test } helpers={ props.helpers } />
+							)
+						}
 					</ul>
 				: children
 			}

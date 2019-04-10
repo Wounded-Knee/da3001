@@ -1,16 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import tagDisplayMode from './constants.js';
+import consts from './constants.js';
 
 const Tag = ({ tag, displayMode }) => {
 	var tagNameDisplay, tagClassName;
 	switch (displayMode) {
-		case tagDisplayMode.EMOJI:
-			tagNameDisplay = tag.name.split(' ')[0];
+		case consts.tagDisplayMode.EMOJI:
+			tagNameDisplay = tag.emoji;
 			tagClassName = 'emoji_mode';
 		break;
 		default:
-			tagNameDisplay = tag.name;
+			tagNameDisplay = tag.emoji + ' ' + tag.name;
 			tagClassName = '';
 		break;
 	}

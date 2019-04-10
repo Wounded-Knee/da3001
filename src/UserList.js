@@ -7,6 +7,7 @@ const UserList = (props) => {
 		users,
 		title,
 		children,
+		UDM,
 	} = props;
 	const cardFan = props.cardFan && users.length > 1;
 
@@ -22,6 +23,7 @@ const UserList = (props) => {
 									key={ index }
 									style={ cardFan ? { transform: "translate(-50%, -50%) rotate(" + ( (-40 / users.length) * index + 20 ) + "deg)" } : {} }
 									user={ user }
+									UDM={ UDM }
 								/>
 							)
 						) }
