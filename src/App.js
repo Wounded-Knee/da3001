@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { BrowserRouter, NavLink, Route } from 'react-router-dom';
 import Ajax from './Ajax.js';
-import UserList from './UserList.js';
+import User from './User.js';
 import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
 import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
 import ComposeTest from './ComposeTest.js';
+import UserLayout from './UserLayout.js';
+import consts from './constants.js';
 import axios from 'axios';
 import './App.css';
 
@@ -34,6 +36,19 @@ class App extends Component {
 				this.ajax('get', this.api().getUrl()+"/users/me")
 					.then(res => this.setState({ me: res.data }))
 			),
+			getUser: function(userId) {
+				this.ajax('get', this.api().getUrl()+'/user/'+userId)
+					.then(res => {
+						this.setState((previousState, currentProps) => {
+							return {
+								users: [
+									...previousState.users.filter(user => user.id !== userId),
+									res.data
+								]
+							};
+						})
+					})
+			}.bind(this),
 			getRelations: () => (
 				this.ajax('get', this.api().getUrl()+"/users")
 					.then(res => this.setState({ relations: res.data }))
@@ -58,13 +73,24 @@ class App extends Component {
 		return {
 			onAnswer: function(testId, answerId) {
 				this.ajax('put', this.api().getUrl()+"/tests/"+testId+"/answer/"+answerId)
-					.then(res => this.assimilateTag(res.data));
-				this.api().getTests();
+					.then(res => {
+						this.assimilateTag(res.data);
+						this.api().getTests();
+					});
 			}.bind(this),
 			submitTest: function(testData) {
-				this.ajax('post', this.api().getUrl()+'/tests', testData);
-				this.api().getTests();
+				this.ajax('post', this.api().getUrl()+'/tests', testData)
+					.then(res => {
+						this.api().getTests();
+					});
 			}.bind(this),
+			setUserPrivacyLevel: function(userId, privacyLevel_id) {
+				this.ajax('put', this.api().getUrl()+'/user/'+userId+'/privacy/'+privacyLevel_id)
+					.then(res => {
+						this.api().getMe();
+						this.api().getRelations();
+					});
+			}.bind(this)
 		}
 	}
 
@@ -141,10 +167,23 @@ class App extends Component {
 						{/* --- Navigation --- */}
 						<header>
 
-							<Ajax fetch={ this.api().getMe }>
-								<UserList me={ this.state.me } users={ [this.state.me] } />
-							</Ajax>
+							<Route
+								path="/"
+								render={
+									routeProps => (
+										<Ajax fetch={ this.api().getMe }>
+											{ routeProps.location.pathname === '/me' ?
+												<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.FACE } helpers={ this.testHelpers() } />
+												:
+												<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.CARD } helpers={ this.testHelpers() } />
+											}
+										</Ajax>
+									)
+								}
+							/>
 
+							<NavLink activeClassName="active" to="/me">Me</NavLink>
+							&nbsp;|&nbsp;
 							<NavLink activeClassName="active" to="/" exact>Answer</NavLink>
 							&nbsp;|&nbsp;
 							<NavLink activeClassName="active" to="/ask">Ask</NavLink>
@@ -197,6 +236,46 @@ class App extends Component {
 							render={
 								routeProps => {
 									return ( <ComposeTest helpers={ this.testHelpers() } /> )
+								}
+							}
+						/>
+
+						{/* --- Me Detail View --- */}
+						<Route
+							path="/me"
+							render={
+								routeProps => (
+									<Ajax fetch={ this.api().getRelations }>
+										<UserLayout
+											{...routeProps}
+											user={ this.state.me }
+											me={ this.state.me }
+											title={ this.state.me.name }
+											helpers={ this.testHelpers() }
+										/>
+									</Ajax>
+								)
+							}
+						/>
+
+						{/* --- User Detail View --- */}
+						<Route
+							path="/user/:userId"
+							render={
+								routeProps => {
+									const userId = parseInt(routeProps.match.params.userId);
+									const user = this.state.users.filter(user => user.id === userId)[0] || {};
+									return (
+										<Ajax fetch={ this.api().getUser } args={ [userId] }>
+											<UserLayout
+												{...routeProps}
+												user={ user }
+												me={ this.state.me }
+												title={ user.name || '' }
+												helpers={ this.testHelpers() }
+											/>
+										</Ajax>
+									);
 								}
 							}
 						/>

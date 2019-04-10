@@ -8,6 +8,7 @@ const DefaultState = {
 	me: {},
 	tags: [],
 	relations: [],
+	users: [],
 	tests: [],
 	privacyLevels: [
 		{ id: 0, value: 0, name: "Private" },

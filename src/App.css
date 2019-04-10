@@ -65,12 +65,14 @@ xbody {
 /* Chrome -> Shadow
 *******************/
 .tagList li,
+.user,
 .userList ul li {
   border-radius: 6px;
   overflow: hidden;
   border: 1px outset;
-  box-shadow: 0px 3px 3px 0px rgba(0,0,0,.3);
+  box-shadow: 0px 2px 10px 0px rgba(0,0,0,.3);
 }
+.user .tagList li,
 .userList .tagList li {
   box-shadow: none;
 }
@@ -89,7 +91,6 @@ xbody {
 
 .hdiv > h2 {
   line-height: 1.7em;
-  background: #ccc;
 }
 
 /* Chrome -> Buttons
@@ -134,10 +135,59 @@ button:active {
   top:1px;
 }
 
+/* Lists -> Users
+*****************/
+.user,
+.userList ul li {
+  position: relative;
+  border: 1px outset #fff;
+  background: #fff;
+  width: 170px;
+  background: #fff;
+  display: inline-block;
+}
+.user.me:after,
+.userList ul li.me:after {
+  content: '';
+  background: url('/stripe.png') repeat;
+  width: 5px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.userList ul li p {
+  margin: 0;
+  line-height: 4em;
+  font-weight: bold;
+}
+
+.userList ul li img {
+  float: left;
+}
+
+/* Lists -> Users Tags
+***********************/
+.user .tagList,
+.userList .tagList {
+  clear: both;
+}
+
+.user .tagList ul li,
+.userList .tagList ul li {
+  padding: 0;
+  border: 0;
+  font-size: 20px;
+}
+
 /* App
 ********/
 .App {
   text-align: center;
+  background: url('/background.jpg');
+  background-size: cover;
+  background-attachment: fixed;
 }
 .App.loading,
 #error {
@@ -149,27 +199,28 @@ button:active {
 .App.loading,
 header,
 #error {
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-image: url('/background.jpg');
-  background-size: cover;
 }
 
 /* App -> Header
 *******************/
 header {
-  height: 15em;
+  height: 12em;
   margin: 0;
-  padding-top: 2.5em;
+  padding-top: 1.5em;
 }
 
 header > a {
   display: inline-block;
-  color: #bbb;
+  color: #444;
 }
 header > a.active {
-  color: #fff;
+  color: #000;
   text-shadow: 0px 0px 3px rgba(150, 150, 150, 1);
+}
+
+header .user {
+  margin: 0 auto 2em;
+  display: block;
 }
 
 /* Lists -> Tags
@@ -194,48 +245,6 @@ header > a.active {
 
 .tagList li.emoji_mode {
   width: auto;
-}
-
-/* Lists -> Users
-*****************/
-.userList ul li {
-  position: relative;
-  border: 1px outset #fff;
-  background: #fff;
-  width: 170px;
-  background: #fff;
-  display: inline-block;
-}
-.userList ul li.me:after {
-  content: '';
-  background: url('/stripe.png') repeat;
-  width: 5px;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-}
-
-.userList ul li p {
-  margin: 0;
-  line-height: 4em;
-  font-weight: bold;
-}
-
-.userList ul li img {
-  float: left;
-}
-
-/* Lists -> Users Tags
-***********************/
-.userList .tagList {
-  clear: both;
-}
-
-.userList .tagList ul li {
-  padding: 0;
-  border: 0;
-  font-size: 20px;
 }
 
 /* Lists -> Tests
@@ -301,6 +310,82 @@ header > a.active {
 .composeTest form {
   margin: auto;
   width: 500px;
+}
+
+/* User Layout
+***************/
+.userLayout .user .tagList li {
+  font-size: 15px;
+  padding: 0.15em;
+  border: 1px solid #ccc;
+}
+
+/* User Component
+******************/
+.user {
+  padding: 40px 40px 40px 35px;
+}
+.user a > img {
+  float: left;
+}
+.user a > .name {
+  float: left;
+}
+
+/* User Component -> FACE
+**************************/
+.user.face {
+  height: 50px;
+  width: 50px;
+  border-radius: 50px;
+  padding: 0;
+}
+.user.full .user.face img,
+.user.face img {
+  width: 75px;
+  margin: -14px 0 0 -14px;
+}
+.user.face.me:after {
+  display: none;
+}
+
+/* User Component -> CARD
+**************************/
+.user.card {
+  padding: 0.25em;
+}
+.user.card .tagList > ul {
+  padding: 0;
+}
+.user.card .privacySelector {
+  float: right;
+  width: 17px;
+  height: 37px;
+  margin-top: 0.25em;
+}
+
+/* User Component -> FULL
+**************************/
+.user.full {
+  width: 500px;
+}
+.user.full img {
+  float: left;
+  width: 100px;
+}
+.user.full .name {
+  float: left;
+  font-size: 3em;
+  line-height: 100px;
+}
+.user.full .intro {
+  padding: 2em;
+}
+.user.full .privacySelector {
+  float: right;
+  width: 60px;
+  height: 57px;
+  padding-top: 29px;
 }
 
 /* Clearfix

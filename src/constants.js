@@ -1,6 +1,13 @@
-const tagDisplayMode = {
-  EMOJI: 'EMOJI',
-  FULL: 'FULL',
+const consts = {
+	tagDisplayMode: {
+		EMOJI: 'EMOJI',
+		FULL: 'FULL',
+	},
+	userDisplayMode: {
+		FACE: 'FACE',
+		CARD: 'CARD',
+		FULL: 'FULL',
+	},
 };
 
-export default tagDisplayMode;
+export default consts;
