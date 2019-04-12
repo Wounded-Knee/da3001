@@ -16,7 +16,7 @@ const Tag = ({ tag, displayMode }) => {
 	}
 
 	return (
-		<li title={ tag.name } className={ tagClassName }>
+		<li title={ tag.name } className={ "tag " + tagClassName }>
 			<Link to={ '/tags/' + tag.id }>{ tagNameDisplay }</Link>
 		</li>
 	);

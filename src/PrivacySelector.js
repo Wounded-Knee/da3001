@@ -8,9 +8,7 @@ const marks = {
   3: 'Near',
   4: 'Far',
   5: {
-    style: {
-      color: 'red',
-    },
+    style: { color: 'red' },
     label: <strong>Public</strong>,
   },
 };

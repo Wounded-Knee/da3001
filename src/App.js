@@ -9,6 +9,7 @@ import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
 import ComposeTest from './ComposeTest.js';
 import UserLayout from './UserLayout.js';
+import Specimen from './Specimen.js';
 import consts from './constants.js';
 import axios from 'axios';
 import './App.css';
@@ -163,10 +164,10 @@ class App extends Component {
 		return (
 			<BrowserRouter>
 				{ this.state.loadStatus.app === true ?
-
 					<div className="App">
-						{/* --- Navigation --- */}
 						<header>
+
+							{/* --- Identification -- */}
 
 							<Route
 								path="/"
@@ -183,15 +184,28 @@ class App extends Component {
 								}
 							/>
 
-							<NavLink activeClassName="active" to="/me">Me</NavLink>
-							&nbsp;|&nbsp;
-							<NavLink activeClassName="active" to="/" exact>Answer</NavLink>
-							&nbsp;|&nbsp;
-							<NavLink activeClassName="active" to="/ask">Ask</NavLink>
-							&nbsp;|&nbsp;
-							<NavLink activeClassName="active" to="/privacy">Privacy</NavLink>
+							{/* --- Navigation --- */}
+							<ul id="nav">
+								<li><NavLink activeClassName="active" to="/me">Me</NavLink></li>
+								<li><NavLink activeClassName="active" to="/" exact>Answer</NavLink></li>
+								<li><NavLink activeClassName="active" to="/ask">Ask</NavLink></li>
+								<li><NavLink activeClassName="active" to="/tags">Tags</NavLink></li>
+								<li><NavLink activeClassName="active" to="/privacy">Privacy</NavLink></li>
+							</ul>
 
 						</header>
+
+						{/* --- Specimen --- */}
+						<Route
+							path="/specimen"
+							render={
+								routeProps => {
+									return (
+										<Specimen {...routeProps} />
+									);
+								}
+							}
+						/>
 
 						{/* --- Tag Detail View --- */}
 						<Route
@@ -283,16 +297,16 @@ class App extends Component {
 
 						{/* --- Privacy View --- */}
 						<Route
-					path="/tags"
-					render={
-						routeProps => <TagsLayout
-							{...routeProps}
-							tags={ this.state.tags }
+							path="/tags"
+							render={
+								routeProps => <TagsLayout
+									{...routeProps}
+									tags={ this.state.tags }
+								/>
+							}
 						/>
-					}
-				/>
 
-				<Route
+						<Route
 							path="/privacy"
 							render={
 								routeProps => (

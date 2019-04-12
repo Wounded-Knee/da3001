@@ -11,12 +11,12 @@ const User = ({ user, index, style, me, tagName='li', UDM, helpers }) => {
 	const {
 		id,
 		name,
-		avatar,
 	} = user;
 
 	const thisIsMe = me && id === me.id;
 
 	var
+		avatar = user.avatar || 'userAvatar',
 		userTags = user.tags || [],
 		tags,
 		TDM=consts.tagDisplayMode.EMOJI,
@@ -58,11 +58,15 @@ const User = ({ user, index, style, me, tagName='li', UDM, helpers }) => {
 
 	const getTheActualStuff = () => (
 		<div>
-			<Link to={ "/user/"+id }>
-				<img src={ "/"+avatar } alt={ name } width="50" />
-				<p className="name">{ name }</p>
-			</Link>
 			{ privacySelector }
+			<Link to={ "/user/"+id }>
+				<img src={ "/"+avatar } alt={ name } />
+			</Link>
+			<p class="name">
+				<Link to={ "/user/"+id }>
+					{ name }
+				</Link>
+			</p>
 			<TagList tags={ tags } displayMode={ TDM }>
 				<span role="img" aria-label="No tags">❓</span>
 			</TagList>
