@@ -72,15 +72,18 @@ class ComposeTest extends Component {
 
 	save(e) {
 		e.preventDefault();
-		this.props.helpers.submitTest(this.state);
-		this.setState(this.getDefaultState());
-		this.forceUpdate(); // This should not be necessary!
+		this.props.helpers.submitTest(this.state).then(res => {
+			this.setState(this.getDefaultState());
+			this.forceUpdate(); // This should not be necessary!
+		}).catch(e => {
+			alert('Something went wrong, dawg.\n\n'+e);
+		});
 	}
 
 	render() {
 		const onChange = this.updateTest.bind(this);
 		return (
-			<HDiv title="Ask a Question" classNames="composeTest">
+			<HDiv title="Ask a Question" classNames="layout composeTest">
 				<AbstractTest data={ this.state } helpers={ this.props.helpers } />
 				<form>
 					{ this.getInputElement({

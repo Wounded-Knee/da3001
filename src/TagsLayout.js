@@ -4,7 +4,7 @@ import HDiv from './HDiv.js';
 
 const TagsLayout = ({tags}) => (
 	<div>
-		<HDiv classNames="tagsLayout" title="All Tags">
+		<HDiv classNames="layout tagsLayout" title="All Tags">
 			<TagList tags={ tags } />
 		</HDiv>
 	</div>

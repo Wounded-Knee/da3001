@@ -1,14 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import TagList from './TagList.js';
-import UserList from './UserList.js';
 import TestList from './TestList.js';
+import Tag from './Tag.js';
+import Swiper from 'react-id-swiper';
 import PrivacySelector from './PrivacySelector.js';
 import consts from './constants.js';
 import PropTypes from 'prop-types';
+import FontAwesome from 'react-fontawesome';
 
 const User = (props) => {
-	const { user, index, style, me, tagName='li', UDM, helpers } = props;
+	const { user, style, me, tagName='li', UDM, helpers } = props;
 	const {
 		id,
 		name,
@@ -23,8 +25,16 @@ const User = (props) => {
 		TDM=consts.tagDisplayMode.EMOJI,
 		className='grayscale ' + (thisIsMe ? 'me' : ''),
 		friends='',
-		intro='',
-		privacySelector='';
+		intro='';
+
+	var privacySelector = <PrivacySelector
+			marks
+			value={ () => {
+				const relation = props.me.relations.filter(relation => relation.id === props.user.id)[0];
+				return relation ? relation.privacyLevel_id : undefined;
+			} }
+			onChange={ helpers.setUserPrivacyLevel.bind(this, props.user.id) }
+		/>;
 
 	if (user.id === undefined) return "";
 
@@ -38,29 +48,63 @@ const User = (props) => {
 			tags = userTags;
 			TDM = consts.tagDisplayMode.FULL;
 			className = 'full '+className;
-			friends = <UserList users={ user.relations } title="Friends" UDM={ consts.userDisplayMode.FACE } />;
+			friends = <ul className="relations">
+				<h2>Publicity</h2>
+				{ [5,4,3,2,1].map((privacyLevel, index) => (
+					<li key={ index } className="clearfix">
+						<h1>
+							<FontAwesome
+								name={ 'battery-' + ['full', 'three-quarters', 'half', 'quarter', 'empty'][privacyLevel-1] }
+								size='lg'
+							/>
+						</h1>
+						<Swiper containerClass="users">
+							{ user.relations.filter(relation => relation.privacyLevel_id === privacyLevel).map(relation => (
+								<div key={ relation.id }>
+									<User user={ relation } tagName="div" UDM={ consts.userDisplayMode.FACE } />
+								</div>
+							))}
+						</Swiper>
+						<Swiper containerClass="tags">
+							{ user.tags.filter(tag => tag.privacyLevel_id === privacyLevel).map(tag => (
+								<div key={ tag.id }>
+									<Tag tag={ tag } />
+								</div>
+							))}
+						</Swiper>
+					</li>
+				))}
+			</ul>;
 			intro = <p className="intro">
 					Perferendis animi est aspernatur quo et. Qui voluptas assumenda
 					sit. Animi rerum quisquam ex beatae veniam. Non asperiores id
 					dolores qui odio dicta. Dolores odio alias nihil voluptates.
 					Nemo exercitationem perferendis et ut vel dolores similique.
 				</p>;
-			privacySelector = <PrivacySelector marks me={ me } user={ user } onChange={ helpers.setUserPrivacyLevel } />
 		break;
 		default:
 		case consts.userDisplayMode.CARD:
 			tags = [ ...userTags ].splice(0,5);
 			className = 'card '+className;
-			privacySelector = <PrivacySelector me={ me } user={ user } onChange={ helpers.setUserPrivacyLevel } />
 		break;
 	}
 	className = 'user '+className;
 	privacySelector = thisIsMe ? '' : privacySelector;
 
-	const getTheActualStuff = () => (
-		<div>
+	const newProps = {
+		...props,
+		style: {
+			...props.style,
+			...style
+		},
+		className: props.className + ' ' + className,
+	};
+	delete newProps.UDM;
+
+	return (
+		<div {...newProps}>
 			{ privacySelector }
-			<Link to={ "/user/"+id }>
+			<Link to={ "/user/"+id } className="image">
 				<img src={ "/"+avatar } alt={ name } />
 			</Link>
 			<p className="name">
@@ -75,27 +119,6 @@ const User = (props) => {
 			{ friends }
 			<TestList title="" tests={ [] } />
 		</div>
-	);
-
-	const newProps = {
-		...props,
-		style: {
-			...props.style,
-			...style
-		},
-		className: props.className + ' ' + className,
-	};
-	delete newProps.UDM;
-
-	return (
-			(tags === 'li') ?
-				<li {...newProps}>
-					{ getTheActualStuff() }
-				</li>
-			:
-				<div {...newProps}>
-					{ getTheActualStuff() }
-				</div>
 	);
 };
 

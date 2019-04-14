@@ -6,7 +6,7 @@ import Stack from './Stack.js';
 
 const shuffleArray = function(a) {
 	var i = a.length, j, temp;
-	if ( i == 0 ) return a;
+	if ( i === 0 ) return a;
 	while ( --i ) {
 		 j = Math.floor( Math.random() * ( i + 1 ) );
 		 temp = a[i];

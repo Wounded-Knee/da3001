@@ -27,6 +27,48 @@ body,
 	filter: gray; /* IE 6-9 */
 }
 
+/* Buttons
+**********/
+button {
+  -moz-box-shadow: 0px 3px 4px -2px #2b2b2b;
+  -webkit-box-shadow: 0px 3px 4px -2px #2b2b2b;
+  box-shadow: 0px 3px 4px -2px #2b2b2b;
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #bababa));
+  background:-moz-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:-webkit-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:-o-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:-ms-linear-gradient(top, #ededed 5%, #bababa 100%);
+  background:linear-gradient(to bottom, #ededed 5%, #bababa 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#bababa',GradientType=0);
+  background-color:#ededed;
+  -moz-border-radius:7px;
+  -webkit-border-radius:7px;
+  border-radius:7px;
+  border:2px solid #c2c2c2;
+  display:inline-block;
+  cursor:pointer;
+  color:#666666;
+  font-family:Arial;
+  font-size: 13px;
+  padding:7px 15px;
+  text-decoration:none;
+  text-shadow:0px 1px 0px #e8e8e8;
+}
+button:hover {
+  background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bababa), color-stop(1, #ededed));
+  background:-moz-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:-webkit-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:-o-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:-ms-linear-gradient(top, #bababa 5%, #ededed 100%);
+  background:linear-gradient(to bottom, #bababa 5%, #ededed 100%);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bababa', endColorstr='#ededed',GradientType=0);
+  background-color:#bababa;
+}
+button:active {
+  position:relative;
+  top:1px;
+}
+
 /* Box
 *******/
 .tag,
@@ -42,39 +84,60 @@ body,
 /* Header
 *********/
 header {
+	background-color: #222;
+	background-image: url("/background.jpg");
 	background-size: cover;
 	background-attachment: fixed;
 	background-repeat: no-repeat;
-	background-image: url('/background.jpg');
 	text-align: center;
+}
+header > div {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+50,ffffff+100&1+0,0+50,1+100 */
+	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 	padding: 1em 0 0;
 }
 header .user {
 	margin: 1em auto;
 }
 header #nav {
-	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,ffffff+5&0+0,1+5 */
-	background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+	font-size: 15px;
+	padding-bottom: 3em;
 }
 header #nav li {
 	display: inline-block;
+	border-right: 1px solid #333;
+}
+header #nav li:last-child {
+	border-right: 0;
 }
 header #nav li a {
-	padding: 0.25em 1em;
-	color: #777;
-	border-radius: 10px;
+	padding: 0.25em 5px;
+	color: #000;
 }
 header #nav li a.active {
-	background: #fff;
-	color: #000;
+	color: #fff;
+}
+
+/* Layout
+**********/
+.layout {
+	padding: 0 1em 1em 1em
+}
+
+/* Privacy Selector
+*******************/
+.privacySelector {
+	margin: 1em;
+	height: 30px;
 }
 
 /* Tag
 *******/
 .tag {
+	display: inline-block;
 	padding: 5px;
 }
 
@@ -90,14 +153,20 @@ header #nav li a.active {
 .user {
 	overflow: hidden;
 }
-.user > div > .name {
+.user > .name {
 	white-space: nowrap;
 	text-overflow: ellipsis;
   margin: 0;
 }
-.user > div > a > img {
-	width: 50px;
+.user > .image {
+	overflow: hidden;
+	display: block;
 	float: left;
+	width: 50px;
+	height: 50px;
+}
+.user > .image > img {
+	width: 50px;
 }
 .user .tag {
 	display: inline-block;
@@ -107,17 +176,18 @@ header #nav li a.active {
   float: right;
   width: 17px;
   height: 37px;
-  margin-top: 0.25em;
+  margin: 0.25em 0 0 0;
 }
 
 /* User Full
 *************/
 .user.full {
+	padding: 1em;
 }
-.user.full > div > a > img {
+.user.full > .image {
 	margin: 0 1em 0.5em 0;
 }
-.user.full > div > .name {
+.user.full > .name {
 	line-height: 50px;
 	font-size: 2em;
 }
@@ -127,8 +197,64 @@ header #nav li a.active {
 	clear: both;
 	margin: 1em 0;
 }
+.user.full .intro {
+	text-align: justify;
+}
 .user.full .privacySelector {
 	width: 60px;
+}
+.user.full .relations .user {
+	display: inline-block;
+}
+.user.full .relations {
+	margin-left: -1em;
+	padding-left: 1em;
+}
+.user.full .relations li {
+	position: relative;
+}
+.user.full .relations li > h1 {
+	float: left;
+	clear: left;
+	line-height: 100px;
+	width: 100%;
+	padding-right: 0.5em;
+	margin-left: -1em;
+	padding-left: 1.5em;
+}
+.user.full .relations li:nth-child(1) > h1 {
+	background: #ddd;
+}
+
+.user.full .relations li:nth-child(2) > h1 {
+	background: #bbb;
+}
+
+.user.full .relations li:nth-child(3) > h1 {
+	background: #999;
+}
+
+.user.full .relations li:nth-child(4) > h1 {
+	background: #777;
+}
+
+.user.full .relations li:nth-child(5) > h1 {
+	background: #555;
+}
+
+.user.full .relations li:nth-child(6) > h1 {
+	background: #333;
+}
+
+.user.full .relations li > .users {
+	position: absolute;
+	top: 0;
+	left: 60px;
+}
+.user.full .relations li > .tags {
+	position: absolute;
+	top: 50px;
+	left: 60px;
 }
 
 /* User Card
@@ -142,16 +268,15 @@ header #nav li a.active {
 	font-size: 12px;
 	padding: 5px 20px 5px 60px;
 }
-.user.card > div > a > img {
-	margin: -5px 0 0 -60px;
+.user.card > .image {
+	margin: 0 0 0 -55px;
 }
-.user.card > div > a > p {
+.user.card > p > a {
   line-height: 4em;
   font-weight: bold;
  }
 .user.card .privacySelector {
 	float: right;
-	height: 30px;
 	margin-top: 10px;
 	margin-right: -14px;
 }
@@ -180,12 +305,12 @@ header #nav li a.active {
 	border-radius: 100%;
 	padding: 0;
 }
-.user.face > div > a > img {
+.user.face > a > img {
 	width: 50px;
 }
 .user.face .tagList,
 .user.face .testList,
-.user.face > div > .name {
+.user.face > .name {
 	display: none;
 }
 

@@ -5,7 +5,6 @@ import User from './User.js';
 import TagDetail from './TagDetail.js';
 import TagsLayout from './TagsLayout.js';
 import TestList from './TestList.js';
-import PrivacyLayout from './PrivacyLayout.js';
 import DefaultState from './data/DefaultState.js';
 import ComposeTest from './ComposeTest.js';
 import UserLayout from './UserLayout.js';
@@ -74,25 +73,31 @@ class App extends Component {
 	testHelpers() {
 		return {
 			onAnswer: function(testId, answerId) {
-				this.ajax('put', this.api().getUrl()+"/tests/"+testId+"/answer/"+answerId)
+				return this.ajax('put', this.api().getUrl()+"/tests/"+testId+"/answer/"+answerId)
 					.then(res => {
 						this.assimilateTag(res.data);
 						this.api().getTests();
 					});
 			}.bind(this),
 			submitTest: function(testData) {
-				this.ajax('post', this.api().getUrl()+'/tests', testData)
+				return this.ajax('post', this.api().getUrl()+'/tests', testData)
 					.then(res => {
 						this.api().getTests();
 					});
 			}.bind(this),
 			setUserPrivacyLevel: function(userId, privacyLevel_id) {
-				this.ajax('put', this.api().getUrl()+'/user/'+userId+'/privacy/'+privacyLevel_id)
+				return this.ajax('put', this.api().getUrl()+'/user/'+userId+'/privacy/'+privacyLevel_id)
 					.then(res => {
 						this.api().getMe();
 						this.api().getRelations();
 					});
-			}.bind(this)
+			}.bind(this),
+			setTagPrivacylevel: function(tagId, privacyLevel_id) {
+				return this.ajax('put', this.api().getUrl()+'/tag/'+tagId+'/privacy/'+privacyLevel_id)
+					.then(res => {
+						this.api().getMe();
+					});
+			}.bind(this),
 		}
 	}
 
@@ -166,33 +171,33 @@ class App extends Component {
 				{ this.state.loadStatus.app === true ?
 					<div className="App">
 						<header>
+							<div>
 
-							{/* --- Identification -- */}
+								{/* --- Identification -- */}
 
-							<Route
-								path="/"
-								render={
-									routeProps => (
-										<Ajax fetch={ this.api().getMe }>
-											{ routeProps.location.pathname === '/me' ?
-												<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.FACE } helpers={ this.testHelpers() } />
-												:
-												<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.CARD } helpers={ this.testHelpers() } />
-											}
-										</Ajax>
-									)
-								}
-							/>
+								<Route
+									path="/"
+									render={
+										routeProps => (
+											<Ajax fetch={ this.api().getMe }>
+												{ routeProps.location.pathname === '/me' ?
+													<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.FACE } helpers={ this.testHelpers() } />
+													:
+													<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.CARD } helpers={ this.testHelpers() } />
+												}
+											</Ajax>
+										)
+									}
+								/>
 
-							{/* --- Navigation --- */}
-							<ul id="nav">
-								<li><NavLink activeClassName="active" to="/me">Me</NavLink></li>
-								<li><NavLink activeClassName="active" to="/" exact>Answer</NavLink></li>
-								<li><NavLink activeClassName="active" to="/ask">Ask</NavLink></li>
-								<li><NavLink activeClassName="active" to="/tags">Tags</NavLink></li>
-								<li><NavLink activeClassName="active" to="/privacy">Privacy</NavLink></li>
-							</ul>
-
+								{/* --- Navigation --- */}
+								<ul id="nav">
+									<li><NavLink activeClassName="active" to="/me">Ego</NavLink></li>
+									<li><NavLink activeClassName="active" to="/" exact>Answer</NavLink></li>
+									<li><NavLink activeClassName="active" to="/ask">Inquiry</NavLink></li>
+									<li><NavLink activeClassName="active" to="/tags">Tags</NavLink></li>
+								</ul>
+							</div>
 						</header>
 
 						{/* --- Specimen --- */}
@@ -217,6 +222,8 @@ class App extends Component {
 										<Ajax fetch={ this.api().getTag } args={ [tagId] }>
 											<TagDetail
 												{...routeProps}
+												me={ this.state.me }
+												helpers={ this.testHelpers() }
 												tag={ this.state.tags.filter(tag => tag.id === tagId)[0] }
 												usersWhoHaveTag={ [] }
 											/>
@@ -245,7 +252,7 @@ class App extends Component {
 							}
 						/>
 
-						{/* --- Compose Test View (index) --- */}
+						{/* --- Compose Test View --- */}
 						<Route
 							path="/ask"
 							render={
@@ -295,7 +302,7 @@ class App extends Component {
 							}
 						/>
 
-						{/* --- Privacy View --- */}
+						{/* --- Tags View --- */}
 						<Route
 							path="/tags"
 							render={
@@ -303,24 +310,6 @@ class App extends Component {
 									{...routeProps}
 									tags={ this.state.tags }
 								/>
-							}
-						/>
-
-						<Route
-							path="/privacy"
-							render={
-								routeProps => (
-									<Ajax fetch={ this.api().getRelations }>
-										<PrivacyLayout
-											{...routeProps}
-											privacyLevels={ this.state.privacyLevels }
-											users={ this.state.relations }
-											me={ this.state.me }
-											helpers={ this.testHelpers() }
-											tags={[]}
-										/>
-									</Ajax>
-								)
 							}
 						/>
 					</div>

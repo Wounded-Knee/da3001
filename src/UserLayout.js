@@ -5,7 +5,7 @@ import consts from './constants.js';
 
 const UserLayout = ({ user, me, title, helpers }) => {
 	return (
-		<HDiv classNames="userLayout grayscale">
+		<HDiv classNames="layout userLayout grayscale">
 			<User
 				user={ user }
 				me={ me }

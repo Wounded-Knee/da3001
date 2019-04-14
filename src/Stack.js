@@ -22,8 +22,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
     };
 };
 
-const grid = 8;
-
 const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer
     userSelect: 'none',
