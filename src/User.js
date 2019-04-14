@@ -7,7 +7,8 @@ import PrivacySelector from './PrivacySelector.js';
 import consts from './constants.js';
 import PropTypes from 'prop-types';
 
-const User = ({ user, index, style, me, tagName='li', UDM, helpers }) => {
+const User = (props) => {
+	const { user, index, style, me, tagName='li', UDM, helpers } = props;
 	const {
 		id,
 		name,
@@ -62,7 +63,7 @@ const User = ({ user, index, style, me, tagName='li', UDM, helpers }) => {
 			<Link to={ "/user/"+id }>
 				<img src={ "/"+avatar } alt={ name } />
 			</Link>
-			<p class="name">
+			<p className="name">
 				<Link to={ "/user/"+id }>
 					{ name }
 				</Link>
@@ -76,13 +77,23 @@ const User = ({ user, index, style, me, tagName='li', UDM, helpers }) => {
 		</div>
 	);
 
+	const newProps = {
+		...props,
+		style: {
+			...props.style,
+			...style
+		},
+		className: props.className + ' ' + className,
+	};
+	delete newProps.UDM;
+
 	return (
 			(tags === 'li') ?
-				<li style={ style } className={ className }>
+				<li {...newProps}>
 					{ getTheActualStuff() }
 				</li>
 			:
-				<div style={ style } className={ className }>
+				<div {...newProps}>
 					{ getTheActualStuff() }
 				</div>
 	);

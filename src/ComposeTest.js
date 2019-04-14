@@ -3,6 +3,7 @@ import HDiv from './HDiv.js';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import TagList from './TagList.js';
+import AbstractTest from './AbstractTest.js';
 
 class ComposeTest extends Component {
 	constructor(props) {
@@ -80,13 +81,8 @@ class ComposeTest extends Component {
 		const onChange = this.updateTest.bind(this);
 		return (
 			<HDiv title="Ask a Question" classNames="composeTest">
+				<AbstractTest data={ this.state } helpers={ this.props.helpers } />
 				<form>
-					{ this.getInputElement({
-						caption: 'Test Name',
-						name: 'name',
-						value: this.props.name,
-						onChange: onChange,
-					}) }
 					{ this.getInputElement({
 						caption: 'Question',
 						name: 'question',
@@ -101,15 +97,15 @@ class ComposeTest extends Component {
 								<fieldset>
 									<legend>{ choice.name ? <TagList tags={ [choice] } /> : "Choice #"+index }</legend>
 									{ this.getInputElement({
-										caption: 'Tag Name',
-										name: 'name',
-										value: choice.name,
+										caption: 'Option Name',
+										name: 'choice',
+										value: choice.choice,
 										onChange: onChange
 									}) }
 									{ this.getInputElement({
-										caption: 'Tag Summary',
-										name: 'summary',
-										value: choice.summary,
+										caption: 'Tag Name',
+										name: 'name',
+										value: choice.name,
 										onChange: onChange
 									}) }
 									{ this.getInputElement({
@@ -119,15 +115,23 @@ class ComposeTest extends Component {
 										onChange: onChange
 									}) }
 									{ this.getInputElement({
-										caption: 'Option Name',
-										name: 'choice',
-										value: choice.choice,
+										caption: 'Tag Summary',
+										name: 'summary',
+										value: choice.summary,
 										onChange: onChange
 									}) }
 								</fieldset>
 							);
 						})
 					}
+
+					{ this.getInputElement({
+						caption: 'Test Name',
+						name: 'name',
+						value: this.props.name,
+						onChange: onChange,
+					}) }
+
 					<button onClick={ this.addChoice.bind(this) }>Add Choice</button>
 					<button onClick={ this.save.bind(this) }>Share Question</button>
 				</form>

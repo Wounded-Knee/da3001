@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { Component } from 'react';
 import User from './User.js';
 import HDiv from './HDiv.js';
 import consts from './constants.js';
+import Stack from './Stack.js';
 
 const shuffleArray = function(a) {
-  var i = a.length, j, temp;
-  if ( i == 0 ) return a;
-  while ( --i ) {
-     j = Math.floor( Math.random() * ( i + 1 ) );
-     temp = a[i];
-     a[i] = a[j];
-     a[j] = temp;
-  }
-  return a;
+	var i = a.length, j, temp;
+	if ( i == 0 ) return a;
+	while ( --i ) {
+		 j = Math.floor( Math.random() * ( i + 1 ) );
+		 temp = a[i];
+		 a[i] = a[j];
+		 a[j] = temp;
+	}
+	return a;
 }
 
 const tagSpecimen = [
@@ -122,30 +123,46 @@ const helpers = {
 	setUserPrivacyLevel: () => {}
 };
 
-const Specimen = () => {
-	return (
-		<div className="specimenLayout">
-			<HDiv title="User Full">
-				<User user={ userSpecimen[0] } me={ me } helpers={ helpers } UDM={ consts.userDisplayMode.FULL } />
-			</HDiv>
+class Specimen extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+		}
+	}
 
-			<HDiv title="User Faces">
-			{
-				userSpecimen.map(specimen => (
-					<User user={ specimen } me={ me } helpers={ helpers } UDM={ consts.userDisplayMode.FACE } />
-				))
-			}
-			</HDiv>
+	render() {
+		return (
+			<div className="specimenLayout">
+				<Stack>
+					{
+						userSpecimen.map(specimen => (
+							<User key={ specimen.id } user={ specimen } me={ me } helpers={ helpers } UDM={ consts.userDisplayMode.FACE } />
+						))
+					}
+				</Stack>
 
-			<HDiv title="User Cards">
-			{
-				userSpecimen.map(specimen => (
-					<User user={ specimen } me={ me } helpers={ helpers } />
-				))
-			}
-			</HDiv>
-		</div>
-	);
+				<HDiv title="User Full">
+					<User user={ userSpecimen[0] } me={ me } helpers={ helpers } UDM={ consts.userDisplayMode.FULL } />
+				</HDiv>
+
+				<HDiv title="User Faces">
+				{
+					userSpecimen.map(specimen => (
+						<User key={ specimen.id } user={ specimen } me={ me } helpers={ helpers } UDM={ consts.userDisplayMode.FACE } />
+					))
+				}
+				</HDiv>
+
+				<HDiv title="User Cards">
+				{
+					userSpecimen.map(specimen => (
+						<User key={ specimen.id } user={ specimen } me={ me } helpers={ helpers } />
+					))
+				}
+				</HDiv>
+			</div>
+		);
+	}
 };
 
 export default Specimen;

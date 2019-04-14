@@ -7,7 +7,9 @@
     "emoji-mart": "^2.11.0",
     "rc-slider": "^8.6.9",
     "react": "^16.8.6",
+    "react-beautiful-dnd": "^11.0.0-beta.3",
     "react-dom": "^16.8.6",
+    "react-draggable": "^3.2.1",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "utils-pluck": "^1.0.3"

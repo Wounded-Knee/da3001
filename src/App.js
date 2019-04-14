@@ -235,7 +235,7 @@ class App extends Component {
 									return (
 										<Ajax fetch={ this.api().getTests }>
 											<TestList
-												title="Questions"
+												title=""
 												helpers={ this.testHelpers() }
 												tests={ this.state.tests }
 											/>
