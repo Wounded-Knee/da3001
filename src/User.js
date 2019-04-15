@@ -25,14 +25,18 @@ const User = (props) => {
 		TDM=consts.tagDisplayMode.EMOJI,
 		className='grayscale ' + (thisIsMe ? 'me' : ''),
 		friends='',
-		intro='';
+		intro='',
+		privacyLevel,
+		relation;
+
+	if (me.relations) {
+		relation = me.relations.filter(relation => relation.id === user.id)[0];
+	}
+	privacyLevel = relation ? relation.privacyLevel_id : undefined;
 
 	var privacySelector = <PrivacySelector
 			marks
-			value={ () => {
-				const relation = props.me.relations.filter(relation => relation.id === props.user.id)[0];
-				return relation ? relation.privacyLevel_id : undefined;
-			} }
+			value={ privacyLevel }
 			onChange={ props.helpers.setUserPrivacyLevel.bind(this, props.user.id) }
 		/>;
 

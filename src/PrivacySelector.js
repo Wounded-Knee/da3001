@@ -19,7 +19,7 @@ const PrivacySelector = (props) => {
 			<Slider
 				min={ 1 }
 				max={ 5 }
-				value={ props.value }
+				value={ props.value || 5 }
 				marks={ props.marks ? marks : {} }
 				onChange={ privacyLevel_id => props.onChange(privacyLevel_id) }
 				vertical
