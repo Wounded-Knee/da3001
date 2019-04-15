@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 
 const User = (props) => {
-	const { user, style, me, tagName='li', UDM, helpers } = props;
+	const { user, style, me, UDM } = props;
 	const {
 		id,
 		name,
@@ -61,7 +61,7 @@ const User = (props) => {
 						<Swiper containerClass="users">
 							{ user.relations.filter(relation => relation.privacyLevel_id === privacyLevel).map(relation => (
 								<div key={ relation.id }>
-									<User user={ relation } tagName="div" UDM={ consts.userDisplayMode.FACE } />
+									<User user={ relation } me={ me } UDM={ consts.userDisplayMode.FACE } helpers={ props.helpers } />
 								</div>
 							))}
 						</Swiper>

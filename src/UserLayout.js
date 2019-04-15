@@ -9,7 +9,6 @@ const UserLayout = ({ user, me, title, helpers }) => {
 			<User
 				user={ user }
 				me={ me }
-				tagName='div'
 				UDM={ consts.userDisplayMode.FULL }
 				helpers={ helpers }
 			/>
