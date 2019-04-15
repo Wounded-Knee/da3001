@@ -33,7 +33,7 @@ const User = (props) => {
 				const relation = props.me.relations.filter(relation => relation.id === props.user.id)[0];
 				return relation ? relation.privacyLevel_id : undefined;
 			} }
-			onChange={ helpers.setUserPrivacyLevel.bind(this, props.user.id) }
+			onChange={ props.helpers.setUserPrivacyLevel.bind(this, props.user.id) }
 		/>;
 
 	if (user.id === undefined) return "";

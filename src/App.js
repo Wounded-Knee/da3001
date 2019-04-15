@@ -233,6 +233,25 @@ class App extends Component {
 							}
 						/>
 
+						{/* --- Users --- */}
+						<Route
+							path="/users"
+							exact
+							render={
+								routeProps => {
+									return (
+										<Ajax fetch={ this.api().getUsers }>
+											<TestList
+												title=""
+												helpers={ this.testHelpers() }
+												tests={ this.state.tests }
+											/>
+										</Ajax>
+									)
+								}
+							}
+						/>
+
 						{/* --- Answer View (index) --- */}
 						<Route
 							path="/"
