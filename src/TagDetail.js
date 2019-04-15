@@ -7,25 +7,34 @@ import HDiv from './HDiv.js';
 const TagDetail = (props) => {
 	if (!props.tag) return '';
 
+	var myPrivacyLevel;
 	const {
 		tag,
 		usersWhoHaveTag,
 	} = props;
 
+	const myTagInstances = props.me.tags.filter(thisTag => thisTag.id === tag.id);
+	if (myTagInstances.length) {
+		myPrivacyLevel = myTagInstances[0].privacyLevel_id;
+	}
 	return (
 	  <div>
 		<HDiv classNames="tagDetail" title={ <TagList tags={ [tag] } /> }>
 			<p>{ tag.summary }</p>
 		</HDiv>
 
-		<p>You have this tag. Set the privacy level here:</p>
-		<PrivacySelector
-			marks
-			me={ props.me }
-			user={ props.me }
-			value={ props.me.tags.filter(thisTag => thisTag.id === tag.id)[0].privacyLevel_id }
-			onChange={ props.helpers.setTagPrivacylevel.bind(this, tag.id) }
-		/>
+		{ myPrivacyLevel ?
+			<div>
+				<p>You have this tag. Set the privacy level here:</p>
+				<PrivacySelector
+					marks
+					me={ props.me }
+					user={ props.me }
+					value={ myPrivacyLevel }
+					onChange={ props.helpers.setTagPrivacylevel.bind(this, tag.id) }
+				/>
+			</div>
+		: '' }
 
 		<TagList tags={ [] } />
 
