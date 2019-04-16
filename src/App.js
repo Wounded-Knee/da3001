@@ -3,8 +3,8 @@ import { BrowserRouter, NavLink, Route } from 'react-router-dom';
 import Ajax from './Ajax.js';
 import User from './User.js';
 import TagDetail from './TagDetail.js';
-import TagsLayout from './TagsLayout.js';
 import TestList from './TestList.js';
+import UserList from './UserList.js';
 import DefaultState from './data/DefaultState.js';
 import ComposeTest from './ComposeTest.js';
 import UserLayout from './UserLayout.js';
@@ -35,7 +35,17 @@ class App extends Component {
 			),
 			getMe: () => (
 				this.ajax('get', this.api().getUrl()+"/users/me")
-					.then(res => this.setState({ me: res.data }))
+					.then(res => {
+						this.setState((previousState, currentProps) => {
+							return {
+								me: res.data,
+								users: [
+									...previousState.users.filter(user => user.id !== res.data.id),
+									res.data
+								]
+							};
+						})
+					})
 			),
 			getUser: function(userId) {
 				this.ajax('get', this.api().getUrl()+'/user/'+userId)
@@ -46,6 +56,16 @@ class App extends Component {
 									...previousState.users.filter(user => user.id !== userId),
 									res.data
 								]
+							};
+						})
+					})
+			}.bind(this),
+			getUsers: function() {
+				this.ajax('get', this.api().getUrl()+'/users')
+					.then(res => {
+						this.setState((previousState, currentProps) => {
+							return {
+								users: res.data
 							};
 						})
 					})
@@ -195,7 +215,7 @@ class App extends Component {
 									<li><NavLink activeClassName="active" to="/me">Ego</NavLink></li>
 									<li><NavLink activeClassName="active" to="/" exact>Answer</NavLink></li>
 									<li><NavLink activeClassName="active" to="/ask">Inquiry</NavLink></li>
-									<li><NavLink activeClassName="active" to="/tags">Tags</NavLink></li>
+									<li><NavLink activeClassName="active" to="/users">Users</NavLink></li>
 								</ul>
 							</div>
 						</header>
@@ -236,19 +256,17 @@ class App extends Component {
 						{/* --- Users --- */}
 						<Route
 							path="/users"
-							exact
 							render={
-								routeProps => {
-									return (
-										<Ajax fetch={ this.api().getUsers }>
-											<TestList
-												title=""
-												helpers={ this.testHelpers() }
-												tests={ this.state.tests }
-											/>
-										</Ajax>
-									)
-								}
+								routeProps => <Ajax fetch={ this.api().getUsers }>
+									<UserList
+										{...routeProps}
+										title="All Users"
+										users={ this.state.users }
+										me={ this.state.me }
+										UDM={ consts.userDisplayMode.CARD }
+										helpers={ this.testHelpers() }
+									/>
+								</Ajax>
 							}
 						/>
 
@@ -318,17 +336,6 @@ class App extends Component {
 										</Ajax>
 									);
 								}
-							}
-						/>
-
-						{/* --- Tags View --- */}
-						<Route
-							path="/tags"
-							render={
-								routeProps => <TagsLayout
-									{...routeProps}
-									tags={ this.state.tags }
-								/>
 							}
 						/>
 					</div>

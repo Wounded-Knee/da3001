@@ -1,4 +1,8 @@
 const consts = {
+	orientation: {
+		HORIZONTAL: 'HORIZONTAL',
+		VERTICAL: 'VERTICAL',
+	},
 	tagDisplayMode: {
 		EMOJI: 'EMOJI',
 		FULL: 'FULL',

@@ -14,7 +14,7 @@ const UserList = (props) => {
 	const cardFan = props.cardFan && users.length > 1;
 
 	return (
-		<HDiv classNames="userList grayscale" title={ title }>
+		<HDiv classNames="layout userList grayscale" title={ title }>
 			{
 				users.length ?
 					<ul className={ "clearfix" + (cardFan ? " cardFan" : "") }>
