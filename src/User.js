@@ -131,6 +131,7 @@ const User = (props) => {
 		case consts.userDisplayMode.CARD:
 			tags = [ ...userTags ].splice(0,5);
 			className = 'card '+className;
+			if (tags.length === 0) className += ' no-tags';
 			privacySelector = <PrivacySelector
 				value={ privacyLevel }
 				onChange={ props.helpers.setUserPrivacyLevel.bind(this, props.user.id) }

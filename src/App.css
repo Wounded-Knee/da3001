@@ -29,6 +29,7 @@ body,
 
 /* Buttons
 **********/
+.test input.choice,
 button {
   -moz-box-shadow: 0px 3px 4px -2px #2b2b2b;
   -webkit-box-shadow: 0px 3px 4px -2px #2b2b2b;
@@ -54,6 +55,7 @@ button {
   text-decoration:none;
   text-shadow:0px 1px 0px #e8e8e8;
 }
+.test input.choice:hover,
 button:hover {
   background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bababa), color-stop(1, #ededed));
   background:-moz-linear-gradient(top, #bababa 5%, #ededed 100%);
@@ -64,6 +66,7 @@ button:hover {
   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bababa', endColorstr='#ededed',GradientType=0);
   background-color:#bababa;
 }
+.test input.choice:active,
 button:active {
   position:relative;
   top:1px;
@@ -73,11 +76,11 @@ button:active {
 *******/
 .tag,
 .user {
-  background: #fff;
+	background: #dedede;
   border-radius: 6px;
   overflow: hidden;
-  border: 1px outset;
-  box-shadow: 0px 3px 3px 0px rgba(0,0,0,.3);
+  border: 1px outset #fff;
+	box-shadow: 0px 0.5px 6px -2px rgba(0,0,0,.6);
 	box-sizing: border-box;
 }
 
@@ -144,10 +147,7 @@ header #nav li a.active {
 	display: inline-block;
 	padding: 2px;
 	font-size: 10px;
-	box-shadow: 0px 0.5px 6px -2px rgba(0,0,0,.6);
 	border-radius: 3px;
-	border-color: #fff;
-	background: #dedede;
 }
 
 /* Tag -> Emoji
@@ -287,13 +287,19 @@ header #nav li a.active {
 	font-size: 12px;
 	padding: 5px 20px 5px 60px;
 }
+.user.card {
+	padding-top: 18px;
+}
 .user.card > .image {
 	margin: 0 0 0 -55px;
 }
-.user.card > p > a {
+.user.card.no-tags > p > a {
   line-height: 4em;
+}
+.user.card > p > a {
+  line-height: 3em;
   font-weight: bold;
- }
+}
 .user.card .privacySelector {
 	float: right;
 	margin-top: 10px;
@@ -306,6 +312,7 @@ header #nav li a.active {
 	margin: 3px;
 	margin-left: 0;
 	box-shadow: none;
+	font-size: 12px;
 }
 .user.card.me:after {
   content: '';
@@ -339,21 +346,50 @@ header #nav li a.active {
 .testList {
 	text-align: center;
 }
-
-.testList ul li {
-  padding: 2em;
-}
-
-.testList ul li:not(:last-child) {
+.testList .test:not(:last-child) {
   border-bottom: 1px dotted #ccc;
 }
 
-.testList ul li .question {
+/* Tests
+*********/
+.test {
+  padding: 2em;
+  text-align: center;
+}
+
+.test .question {
   margin-bottom: 1em;
 }
 
-.testList ul li button {
+.test button {
   margin: 0.5em;
+}
+
+/* Tests -> Editor
+*******************/
+.test.edit input.question {
+	display: block;
+	text-align: center;
+	margin: auto;
+	border: 0;
+}
+.test.edit input.choice {
+	text-align: center;
+	display: inline-block;
+	margin: 3em 0 0.5em 0;
+}
+.test.edit .tagInputs {
+	margin: 1em 0;
+}
+.test.edit .tagDisplay {
+	margin-bottom: 5em;
+}
+.test.edit .tagDisplay .tag {
+	font-size: 25px;
+}
+.test.edit .emoji-mart {
+	position: sticky;
+	top: 0;
 }
 
 /* Specimen

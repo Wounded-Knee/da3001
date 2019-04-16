@@ -3,7 +3,7 @@ import HDiv from './HDiv.js';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import TagList from './TagList.js';
-import AbstractTest from './AbstractTest.js';
+import Test from './Test.js';
 
 class ComposeTest extends Component {
 	constructor(props) {
@@ -84,7 +84,7 @@ class ComposeTest extends Component {
 		const onChange = this.updateTest.bind(this);
 		return (
 			<HDiv title="Ask a Question" classNames="layout composeTest">
-				<AbstractTest data={ this.state } helpers={ this.props.helpers } />
+				<Test data={ this.state } helpers={ this.props.helpers } />
 				<form>
 					{ this.getInputElement({
 						caption: 'Question',

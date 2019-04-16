@@ -6,7 +6,7 @@ import TagDetail from './TagDetail.js';
 import TestList from './TestList.js';
 import UserList from './UserList.js';
 import DefaultState from './data/DefaultState.js';
-import ComposeTest from './ComposeTest.js';
+import Test from './Test.js';
 import UserLayout from './UserLayout.js';
 import Specimen from './Specimen.js';
 import consts from './constants.js';
@@ -293,9 +293,10 @@ class App extends Component {
 						<Route
 							path="/ask"
 							render={
-								routeProps => {
-									return ( <ComposeTest helpers={ this.testHelpers() } /> )
-								}
+								routeProps => <Test
+									edit
+									helpers={ this.testHelpers() }
+								/>
 							}
 						/>
 
