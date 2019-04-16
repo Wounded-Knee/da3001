@@ -28,6 +28,10 @@ class App extends Component {
 	api() {
 		return {
 			getUrl: () => this.state.api,
+			becomeUser: userId => {
+				return this.ajax('get', this.api().getUrl()+"/become/"+userId)
+					.then(res => this.api().getMe())
+			},
 			getTests: () => (
 				this.ajax('get', this.api().getUrl()+"/tests")
 					.then(res => this.setState({ tests: res.data }))
@@ -220,17 +224,29 @@ class App extends Component {
 							</div>
 						</header>
 
-						{/* --- Specimen --- */}
-						<Route
-							path="/specimen"
-							render={
-								routeProps => {
-									return (
-										<Specimen {...routeProps} />
-									);
+						{/* === DEVELOPMENT FEATURES === */}
+							{/* --- Specimen --- */}
+							<Route
+								path="/specimen"
+								render={
+									routeProps => {
+										return (
+											<Specimen {...routeProps} />
+										);
+									}
 								}
-							}
-						/>
+							/>
+
+							{/* --- Become User --- */}
+							<Route
+								path="/become/:userId"
+								render={
+									routeProps => {
+										const userId = parseInt(routeProps.match.params.userId);
+										return <Ajax fetch={ this.api().becomeUser } args={ [userId] } />;
+									}
+								}
+							/>
 
 						{/* --- Tag Detail View --- */}
 						<Route

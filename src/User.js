@@ -120,12 +120,12 @@ const User = (props) => {
 					</ul>
 				</DragDropContext>
 			);
-			intro = <p className="intro">
-					Perferendis animi est aspernatur quo et. Qui voluptas assumenda
-					sit. Animi rerum quisquam ex beatae veniam. Non asperiores id
-					dolores qui odio dicta. Dolores odio alias nihil voluptates.
-					Nemo exercitationem perferendis et ut vel dolores similique.
-				</p>;
+			// intro = <p className="intro">
+			// 		Perferendis animi est aspernatur quo et. Qui voluptas assumenda
+			// 		sit. Animi rerum quisquam ex beatae veniam. Non asperiores id
+			// 		dolores qui odio dicta. Dolores odio alias nihil voluptates.
+			// 		Nemo exercitationem perferendis et ut vel dolores similique.
+			// 	</p>;
 		break;
 		default:
 		case consts.userDisplayMode.CARD:
@@ -154,6 +154,14 @@ const User = (props) => {
 	return (
 		<div {...newProps}>
 			{ privacySelector }
+			{ !thisIsMe ?
+				<Link to={ "/become/"+id } className="masquerade">
+					<FontAwesome
+						name={ 'mask' }
+						size='lg'
+					/>
+				</Link>
+			: null }
 			<Link to={ "/user/"+id } className="image">
 				<img src={ "/"+avatar } alt={ name } />
 			</Link>

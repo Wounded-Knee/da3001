@@ -140,6 +140,9 @@ header #nav li a.active {
 	margin: 1em;
 	height: 30px;
 }
+.privacySelector .rc-slider-dot {
+	box-shadow: inset 2px 2px 4px -4px rgba(0,0,0,0.75);
+}
 
 /* Tag
 *******/
@@ -188,6 +191,10 @@ header #nav li a.active {
   height: 37px;
   margin: 0.25em 0 0 0;
 }
+.user .masquerade {
+	float: right;
+	color: #bbb;
+}
 
 /* User Full
 *************/
@@ -213,6 +220,9 @@ header #nav li a.active {
 }
 .user.full .privacySelector {
 	width: 60px;
+}
+.user.full .masquerade {
+	margin-right: 1em;
 }
 .user.full .relations .user {
 	display: inline-block;
@@ -300,6 +310,10 @@ header #nav li a.active {
   line-height: 3em;
   font-weight: bold;
 }
+.user.card .masquerade {
+	font-size: 10px;
+	margin: -12px -15px 0 0;
+}
 .user.card .privacySelector {
 	float: right;
 	margin-top: 10px;
@@ -331,6 +345,9 @@ header #nav li a.active {
 	height: 50px;
 	border-radius: 100%;
 	padding: 0;
+}
+.user.face .masquerade {
+	display: none;
 }
 .user.face > a > img {
 	width: 50px;

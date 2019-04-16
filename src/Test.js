@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Prompt } from 'react-router-dom';
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 
@@ -22,6 +23,7 @@ class Test extends Component {
 		super(props);
 		this.state = {
 			pickerIndex: undefined,
+			dirty: false,
 			data: props.data || emptyTest,
 		}
 	}
@@ -58,7 +60,8 @@ class Test extends Component {
 			data: {
 				...this.state.data,
 				tags: tags,
-			}
+			},
+			dirty: true,
 		});
 	}
 
@@ -69,7 +72,8 @@ class Test extends Component {
 			data: {
 				...this.state.data,
 				question: questionText
-			}
+			},
+			dirty: true,
 		});
 	}
 
@@ -80,7 +84,10 @@ class Test extends Component {
 			choices: this.state.data.tags.filter(tag => JSON.stringify(tag) !== JSON.stringify(emptyChoice))
 		};
 		this.props.helpers.submitTest(x).then(() => {
-			this.setState({ data: emptyTest });
+			this.setState({
+				data: emptyTest,
+				dirty: false,
+			});
 		});
 	}
 
@@ -93,6 +100,11 @@ class Test extends Component {
 
 		return (
 			<div className={ this.getClassName() }>
+				<Prompt
+					when={ this.state.dirty }
+					message="Are you sure? Your inquiry has not been saved yet."
+				/>
+
 				{/* --- Emoji Picker --- */}
 				{ this.state.pickerIndex !== undefined ?
 					<Picker
