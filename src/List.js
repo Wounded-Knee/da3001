@@ -96,10 +96,13 @@ class List extends Component {
 					{(provided, snapshot) => (
 						<ul className={ this.getClassName() } ref={ provided.innerRef } style={ this.getListStyle(snapshot.isDraggingOver) }>
 							{ provided.placeholder }
-							{ this.props.draggable ?
-								this.props.children.map(this.getDraggableItem.bind(this))
-							:
-								this.props.children.map(this.getItem.bind(this))
+							{
+								this.props.children ?
+									this.props.draggable ?
+										this.props.children.map(this.getDraggableItem.bind(this))
+									:
+										this.props.children.map(this.getItem.bind(this))
+								: ''
 							}
 						</ul>
 					)}
@@ -108,7 +111,11 @@ class List extends Component {
 		} else {
 			return (
 				<ul className={ this.getClassName() }>
-					{ this.props.children.map(this.getItem.bind(this)) }
+					{
+						this.props.children ?
+							this.props.children.map(this.getItem.bind(this))
+						: ''
+					}
 				</ul>
 			);
 		}
