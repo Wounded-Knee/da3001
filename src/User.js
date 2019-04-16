@@ -86,7 +86,7 @@ const User = (props) => {
 						{ [5,4,3,2,1].map((privacyLevel, index) => (
 							<li key={ index } className="clearfix">
 								<FontAwesome
-									name={ 'battery-' + ['full', 'three-quarters', 'half', 'quarter', 'empty'][privacyLevel-1] }
+									name={ ['heart', 'user', 'user-friends', 'users', 'globe-africa'][privacyLevel-1] }
 									size='lg'
 								/>
 

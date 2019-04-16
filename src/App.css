@@ -86,8 +86,6 @@ button:active {
 header {
 	background-color: #222;
 	background-image: url("/background.jpg");
-	background-size: cover;
-	background-attachment: fixed;
 	background-repeat: no-repeat;
 	text-align: center;
 }
@@ -144,7 +142,12 @@ header #nav li a.active {
 *******/
 .tag {
 	display: inline-block;
-	padding: 5px;
+	padding: 2px;
+	font-size: 10px;
+	box-shadow: 0px 0.5px 6px -2px rgba(0,0,0,.6);
+	border-radius: 3px;
+	border-color: #fff;
+	background: #dedede;
 }
 
 /* Tag -> Emoji
@@ -152,6 +155,7 @@ header #nav li a.active {
 .tag.emoji_mode {
 	padding: 0;
 	border: 0;
+	background: transparent;
 }
 
 /* User
@@ -189,6 +193,7 @@ header #nav li a.active {
 *************/
 .user.full {
 	padding: 1em;
+	padding-bottom: 0;
 }
 .user.full > .image {
 	margin: 0 1em 0.5em 0;
@@ -255,7 +260,10 @@ header #nav li a.active {
 .user.full .relations > li > .list {
 	height: 50px;
 	margin-left: 80px;
-	width: 100%;
+	display: flex;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	white-space: nowrap
 }
 .user.full .relations > li > .users {
 	position: absolute;
@@ -292,10 +300,11 @@ header #nav li a.active {
 	margin-right: -14px;
 }
 .user.card .tagList {
-	margin: 5px 0 0 0;
+	margin: -10px 0 0 0;
 }
 .user.card .tag {
 	margin: 3px;
+	margin-left: 0;
 	box-shadow: none;
 }
 .user.card.me:after {

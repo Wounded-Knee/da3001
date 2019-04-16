@@ -38,8 +38,6 @@ class List extends Component {
 		return {
 			background: isDraggingOver ? 'gray' : 'inherit',
 			border: draggingFromThisWith ? '1px solid black' : 'inherit',
-			padding: 0,
-			width: 250,
 		};
 	}
 
