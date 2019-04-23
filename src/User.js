@@ -6,24 +6,19 @@ import FontAwesome from 'react-fontawesome';
 import Relations from './Relations';
 
 var className = 'user';
-
 const UserCard = (props) => {
 	return <User {...props} className="card no-tags" />;
 }
-
 const UserFace = (props) => {
 	return <User {...props} className="face" />;
 }
-
 const UserProfile = (props) => {
 	return <User {...props} className="full" privacySelector relations />;
 }
-
 const User = (props) => {
 	const { me, user, privacySelector, relations } = props;
 	const { id, avatar, name, privacyLevel } = user;
 	const thisIsMe = me && id === me.id;
-
 	return (
 		<div {...props} className={ props.className + ' ' + className }>
 
@@ -34,7 +29,12 @@ const User = (props) => {
 					onChange={ () => {} }
 				/>
 			: null }
+	}
 
+const UserProfile = (props) => {
+	const thisIsMe = props.me && id === me.id;
+	return (
+		<div {...props} className={ props.className + ' ' + className + ' full' }>
 			{ !thisIsMe ?
 				<Link to={ "/become/"+id } className="masquerade">
 					<FontAwesome

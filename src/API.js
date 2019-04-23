@@ -55,12 +55,12 @@ class API extends Component {
 			withCredentials: true,
 		});
 		if (setState) {
-			return axios[method](...args)
-				.then(
-					res => this.props.setState(
-						(previousState, currentProps) => setState(previousState, currentProps, res.data)
-					)
-				);
+		return axios[method](...args)
+			.then(
+				res => this.props.setState(
+					(previousState, currentProps) => setState(previousState, currentProps, res.data)
+				)
+			);
 		} else {
 			return axios[method](...args);
 		}
