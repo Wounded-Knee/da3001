@@ -1,8 +1,8 @@
 const DefaultState = {
 	loadStatus: {
-		app: false,
-		me: false,
-		tests: false,
+		app: true,
+		me: true,
+		tests: true,
 	},
 	api: 'http://joshua.local:3001',
 	me: {},

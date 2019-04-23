@@ -1,15 +1,13 @@
 import React from 'react';
-import User from './User.js';
+import { UserProfile } from './User.js';
 import HDiv from './HDiv.js';
-import consts from './constants.js';
 
 const UserLayout = ({ user, me, title, helpers }) => {
 	return (
 		<HDiv classNames="layout userLayout grayscale">
-			<User
+			<UserProfile
 				user={ user }
 				me={ me }
-				UDM={ consts.userDisplayMode.FULL }
 				helpers={ helpers }
 			/>
 		</HDiv>
