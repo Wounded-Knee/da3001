@@ -19,8 +19,9 @@ const User = (props) => {
 	const { me, user, privacySelector, relations } = props;
 	const { id, avatar, name, privacyLevel } = user;
 	const thisIsMe = me && id === me.id;
+
 	return (
-		<div {...props} className={ props.className + ' ' + className }>
+		<div {...props} className={ props.className + ' ' + className + ' full' }>
 
 			{ !thisIsMe && privacySelector ?
 				<PrivacySelector
@@ -29,12 +30,7 @@ const User = (props) => {
 					onChange={ () => {} }
 				/>
 			: null }
-	}
 
-const UserProfile = (props) => {
-	const thisIsMe = props.me && id === me.id;
-	return (
-		<div {...props} className={ props.className + ' ' + className + ' full' }>
 			{ !thisIsMe ?
 				<Link to={ "/become/"+id } className="masquerade">
 					<FontAwesome
