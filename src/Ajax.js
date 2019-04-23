@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import axios from 'axios';
+import DefaultState from './data/DefaultState.js';
 
 class Ajax extends Component {
 	componentWillMount() {

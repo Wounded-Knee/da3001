@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
 import { BrowserRouter, NavLink, Route } from 'react-router-dom';
-import Ajax from './Ajax.js';
-import User from './User.js';
-import TagDetail from './TagDetail.js';
-import TestList from './TestList.js';
-import UserList from './UserList.js';
+import { UserCard } from './User.js';
 import DefaultState from './data/DefaultState.js';
-import Test from './Test.js';
 import UserLayout from './UserLayout.js';
-import Specimen from './Specimen.js';
 import consts from './constants.js';
-import axios from 'axios';
 import './App.css';
+import API from './API';
 
 class App extends Component {
 	constructor(props) {
@@ -21,11 +15,8 @@ class App extends Component {
 		this.state = DefaultState;
 	}
 
-	componentDidMount() {
-		this.onLoad();
-	}
-
 	api() {
+		/*
 		return {
 			getUrl: () => this.state.api,
 			becomeUser: userId => {
@@ -92,6 +83,7 @@ class App extends Component {
 					})
 			),
 		}
+		*/
 	}
 
 	testHelpers() {
@@ -125,68 +117,6 @@ class App extends Component {
 		}
 	}
 
-	ajax(httpMethod, url, data) {
-		const args = [url];
-		if (['put', 'patch', 'post'].indexOf(httpMethod) !== -1) args.push(data);
-		args.push({
-			withCredentials: true,
-		});
-		return axios[httpMethod](...args);
-	}
-
-	assimilateTag(tagData) {
-		return new Promise((resolve, reject) => {
-			this.setState((previousState, currentprops) => {
-				if (previousState.me.tags.filter(tag => tag.id === tagData.id).length) {
-					reject('Tag already exists!');
-					return new Error('Tag already exists.');
-				} else {
-					const newState = {
-						me: {
-							...previousState.me,
-							tags: tagData.me.tags,
-						}
-					};
-					resolve(newState);
-					return newState;
-				}
-			});
-		});
-	}
-
-	assimilateMe(me) {
-		this.setState((previousState, currentProps) => {
-			return {
-				...previousState,
-				me: me
-			}
-		})
-	}
-
-	onError(error) {
-		this.setState((previousState, currentProps) => {
-			if (this.props.onError) this.props.onError(error);
-			return {
-				loadStatus: {
-					...previousState.loadStatus,
-					app: error
-				}
-			};
-		});
-	}
-
-	onLoad() {
-		this.setState((previousState, currentProps) => {
-			if (this.props.onLoad) this.props.onLoad();
-			return {
-				loadStatus: {
-					...previousState.loadStatus,
-					app: true
-				}
-			};
-		});
-	}
-
 	/* Render
 	********/
 	render() {
@@ -203,13 +133,13 @@ class App extends Component {
 									path="/"
 									render={
 										routeProps => (
-											<Ajax fetch={ this.api().getMe }>
+											<API routine="getMe" setState={ this.setState.bind(this) }>
 												{ routeProps.location.pathname === '/me' ?
-													<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.FACE } helpers={ this.testHelpers() } />
+													<UserCard me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.FACE } helpers={ this.testHelpers() } />
 													:
-													<User me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.CARD } helpers={ this.testHelpers() } />
+													<UserCard me={ this.state.me } user={ this.state.me } UDM={ consts.userDisplayMode.CARD } helpers={ this.testHelpers() } />
 												}
-											</Ajax>
+											</API>
 										)
 									}
 								/>
@@ -224,116 +154,6 @@ class App extends Component {
 							</div>
 						</header>
 
-						{/* === DEVELOPMENT FEATURES === */}
-							{/* --- Specimen --- */}
-							<Route
-								path="/specimen"
-								render={
-									routeProps => {
-										return (
-											<Specimen {...routeProps} />
-										);
-									}
-								}
-							/>
-
-							{/* --- Become User --- */}
-							<Route
-								path="/become/:userId"
-								render={
-									routeProps => {
-										const userId = parseInt(routeProps.match.params.userId);
-										return <Ajax fetch={ this.api().becomeUser } args={ [userId] } />;
-									}
-								}
-							/>
-
-						{/* --- Tag Detail View --- */}
-						<Route
-							path="/tags/:tagId"
-							render={
-								routeProps => {
-									const tagId = parseInt(routeProps.match.params.tagId);
-									return (
-										<Ajax fetch={ this.api().getTag } args={ [tagId] }>
-											<TagDetail
-												{...routeProps}
-												me={ this.state.me }
-												helpers={ this.testHelpers() }
-												tag={ this.state.tags.filter(tag => tag.id === tagId)[0] }
-												usersWhoHaveTag={ [] }
-											/>
-										</Ajax>
-									);
-								}
-							}
-						/>
-
-						{/* --- Users --- */}
-						<Route
-							path="/users"
-							render={
-								routeProps => <Ajax fetch={ this.api().getUsers }>
-									<UserList
-										{...routeProps}
-										title="All Users"
-										users={ this.state.users }
-										me={ this.state.me }
-										UDM={ consts.userDisplayMode.CARD }
-										helpers={ this.testHelpers() }
-									/>
-								</Ajax>
-							}
-						/>
-
-						{/* --- Answer View (index) --- */}
-						<Route
-							path="/"
-							exact
-							render={
-								routeProps => {
-									return (
-										<Ajax fetch={ this.api().getTests }>
-											<TestList
-												title=""
-												helpers={ this.testHelpers() }
-												tests={ this.state.tests }
-											/>
-										</Ajax>
-									)
-								}
-							}
-						/>
-
-						{/* --- Compose Test View --- */}
-						<Route
-							path="/ask"
-							render={
-								routeProps => <Test
-									edit
-									helpers={ this.testHelpers() }
-								/>
-							}
-						/>
-
-						{/* --- Me Detail View --- */}
-						<Route
-							path="/me"
-							render={
-								routeProps => (
-									<Ajax fetch={ this.api().getRelations }>
-										<UserLayout
-											{...routeProps}
-											user={ this.state.me }
-											me={ this.state.me }
-											title={ this.state.me.name }
-											helpers={ this.testHelpers() }
-										/>
-									</Ajax>
-								)
-							}
-						/>
-
 						{/* --- User Detail View --- */}
 						<Route
 							path="/user/:userId"
@@ -342,7 +162,7 @@ class App extends Component {
 									const userId = parseInt(routeProps.match.params.userId);
 									const user = this.state.users.filter(user => user.id === userId)[0] || {};
 									return (
-										<Ajax fetch={ this.api().getUser } args={ [userId] }>
+										<API routine="getUser" params={ routeProps.match.params } setState={ this.setState.bind(this) }>
 											<UserLayout
 												{...routeProps}
 												user={ user }
@@ -350,7 +170,7 @@ class App extends Component {
 												title={ user.name || '' }
 												helpers={ this.testHelpers() }
 											/>
-										</Ajax>
+										</API>
 									);
 								}
 							}
