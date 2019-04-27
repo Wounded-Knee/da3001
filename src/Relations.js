@@ -9,10 +9,6 @@ const Relations = (props) => {
 	const { id } = user;
 	const thisIsMe = me && id === me.id;
 
-	if (me.relations) {
-		const { privacyLevel_id } = me.relations.filter(relation => relation.id === user.id)[0];
-	}
-
 	const onDragEnd = function(result) {
 		const { source, destination, draggableId } = result;
 
@@ -62,13 +58,6 @@ const Relations = (props) => {
 
 						{/*
 						<Swiper containerClass="users">
-						</Swiper>
-						<Swiper containerClass="tags">
-							{ user.tags.filter(tag => tag.privacyLevel_id === privacyLevel).map(tag => (
-								<div key={ tag.id }>
-									<Tag tag={ tag } />
-								</div>
-							))}
 						</Swiper>
 						*/}
 					</li>

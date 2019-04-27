@@ -1,15 +1,8 @@
 const DefaultState = {
-	loadStatus: {
-		app: true,
-		me: true,
-		tests: true,
-	},
 	api: 'http://joshua.local:3001',
-	me: {},
-	tags: [],
-	relations: [],
+	userId: undefined,
 	users: [],
-	tests: [],
+	nodes: [],
 	privacyLevels: [
 		{ id: 0, value: 0, name: "Private" },
 		{ id: 1, value: 1, name: "Close" },

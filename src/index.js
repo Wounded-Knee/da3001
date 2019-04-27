@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AppContainer from './containers/AppContainer';
 import * as serviceWorker from './serviceWorker';
-import TodoActions from './data/TodoActions';
 
 ReactDOM.render(<AppContainer />, document.getElementById('root'));
 
@@ -11,7 +10,3 @@ ReactDOM.render(<AppContainer />, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-
-TodoActions.addTodo('My first task');
-TodoActions.addTodo('Another task');
-TodoActions.addTodo('Finish this tutorial');

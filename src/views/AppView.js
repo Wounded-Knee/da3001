@@ -2,11 +2,11 @@ import React from 'react';
 import App from '../App';
 
 function AppView(props) {
-	var props = {
-		todos: [...props.todos.values()]
+	var newProps = {
+		users: [...props.users],
+		nodes: [...props.nodes.values()],
 	};
-	console.log('PROPS ', props);
-  return <App { ...props } />;
+	return <App { ...newProps } />;
 }
 
 export default AppView;

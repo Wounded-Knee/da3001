@@ -1,16 +1,19 @@
 import AppView from '../views/AppView';
 import {Container} from 'flux/utils';
-import TodoStore from '../data/TodoStore';
+import UserStore from '../data/UserStore';
+import NodeStore from '../data/NodeStore';
 
 function getStores() {
   return [
-    TodoStore,
+    UserStore,
+    NodeStore,
   ];
 }
 
 function getState() {
   return {
-    todos: TodoStore.getState(),
+    users: UserStore.getState(),
+    nodes: NodeStore.getState(),
   };
 }
 

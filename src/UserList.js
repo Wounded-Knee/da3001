@@ -1,41 +1,47 @@
-import React from 'react';
-import { UserCard, UserFace, UserProfile } from './User.js';
+import React, { Component} from 'react';
+import { UserCard } from './User.js';
+import UserActions from './data/UserActions';
 import HDiv from './HDiv.js';
 
-const UserList = (props) => {
-	const {
-		users,
-		me,
-		title,
-		children,
-		UDM,
-		helpers,
-	} = props;
-	const cardFan = props.cardFan && users.length > 1;
+class UserList extends Component {
+	componentWillMount() {
+		setTimeout(() => {
+			UserActions.getAllUsers();
+		}, 1);
+	}
 
-	return (
-		<HDiv classNames="layout userList grayscale" title={ title }>
-			{
-				users.length ?
-					<ul className={ "clearfix" + (cardFan ? " cardFan" : "") }>
-						{ users.map(
-							(user, index) => (
-								<UserCard
-									{ ...props }
-									key={ index }
-									style={ cardFan ? { transform: "translate(-50%, -50%) rotate(" + ( (-40 / users.length) * index + 20 ) + "deg)" } : {} }
-									user={ user }
-									me={ me }
-									UDM={ UDM }
-									helpers={ helpers }
-								/>
-							)
-						) }
-					</ul>
-				: children
-			}
-		</HDiv>
-	);
+	componentWillReceiveProps(nextProps) {
+		if (JSON.stringify(nextProps.users) !== JSON.stringify(this.props.users)) {
+			//UserActions.getAllUsers();
+		}
+	}
+
+	render() {
+		const {
+			users,
+			children,
+		} = this.props;
+
+		return (
+			<HDiv classNames="layout userList grayscale" title="User List">
+				{
+					users.length ?
+						<ul className="clearfix">
+							{ users.map(
+								(user, index) => (
+									<UserCard
+										{ ...this.props }
+										key={ index }
+										user={ user }
+									/>
+								)
+							) }
+						</ul>
+					: children
+				}
+			</HDiv>
+		);
+	}
 };
 
 export default UserList;

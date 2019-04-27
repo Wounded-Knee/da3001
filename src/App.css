@@ -29,7 +29,7 @@ body,
 
 /* Buttons
 **********/
-.test input.choice,
+.node input.choice,
 button {
   -moz-box-shadow: 0px 3px 4px -2px #2b2b2b;
   -webkit-box-shadow: 0px 3px 4px -2px #2b2b2b;
@@ -55,7 +55,7 @@ button {
   text-decoration:none;
   text-shadow:0px 1px 0px #e8e8e8;
 }
-.test input.choice:hover,
+.node input.choice:hover,
 button:hover {
   background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #bababa), color-stop(1, #ededed));
   background:-moz-linear-gradient(top, #bababa 5%, #ededed 100%);
@@ -66,7 +66,7 @@ button:hover {
   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#bababa', endColorstr='#ededed',GradientType=0);
   background-color:#bababa;
 }
-.test input.choice:active,
+.node input.choice:active,
 button:active {
   position:relative;
   top:1px;
@@ -358,53 +358,53 @@ header #nav li a.active {
 	display: none;
 }
 
-/* Lists -> Tests
+/* Lists -> Nodes
 ******************/
-.testList {
+.nodeList {
 	text-align: center;
 }
-.testList .test:not(:last-child) {
+.nodeList .node:not(:last-child) {
   border-bottom: 1px dotted #ccc;
 }
 
-/* Tests
+/* Nodes
 *********/
-.test {
+.node {
   padding: 2em;
   text-align: center;
 }
 
-.test .question {
+.node .option {
   margin-bottom: 1em;
 }
 
-.test button {
+.node button {
   margin: 0.5em;
 }
 
-/* Tests -> Editor
+/* Nodes -> Editor
 *******************/
-.test.edit input.question {
+.node.edit input.option {
 	display: block;
 	text-align: center;
 	margin: auto;
 	border: 0;
 }
-.test.edit input.choice {
+.node.edit input.option {
 	text-align: center;
 	display: inline-block;
 	margin: 3em 0 0.5em 0;
 }
-.test.edit .tagInputs {
+.node.edit .tagInputs {
 	margin: 1em 0;
 }
-.test.edit .tagDisplay {
+.node.edit .tagDisplay {
 	margin-bottom: 5em;
 }
-.test.edit .tagDisplay .tag {
+.node.edit .tagDisplay .tag {
 	font-size: 25px;
 }
-.test.edit .emoji-mart {
+.node.edit .emoji-mart {
 	position: sticky;
 	top: 0;
 }
