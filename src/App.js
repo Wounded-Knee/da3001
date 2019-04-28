@@ -4,8 +4,25 @@ import { BrowserRouter, NavLink, Route } from 'react-router-dom';
 import UserLayout from './UserLayout.js';
 import UserList from './UserList.js';
 import UserActions from './data/UserActions';
+import NodeActions from './data/NodeActions';
 import './App.css';
 import Node from './Node';
+
+const DataRoute = ({ path, getData, propName, children }) => (
+	<Route
+		path={ path }
+		render={
+			routeProps => {
+				const data = getData(routeProps);
+				return data ? (
+					React.cloneElement(children, {
+						[propName]: data,
+					})
+				) : null;
+			}
+		}
+	/>
+);
 
 class App extends Component {
 	componentWillMount() {
@@ -30,50 +47,40 @@ class App extends Component {
 					</header>
 
 					{/* --- User List View --- */}
-					<Route
+					<DataRoute
 						path="/users"
-						render={
-							routeProps => {
-								return (
-									<UserList
-										{...this.props}
-										{...routeProps.match.params}
-										me={ me }
-										title=""
-									/>
-								);
-							}
-						}
-					/>
+						getData={ routeProps => (
+							UserActions.getAllUsers(
+								{ },
+								this.props.users
+							)
+						) }
+						propName="users"
+					><UserList /></DataRoute>
 
 					{/* --- User Detail View --- */}
-					<Route
+					<DataRoute
 						path="/user/:userId"
-						render={
-							routeProps => {
-								return (
-									<UserLayout
-										{...this.props}
-										{...routeProps.match.params}
-										me={ me }
-										user={ this.props.users.filter(user => user.id === parseInt(routeProps.match.params.userId))[0] }
-									/>
-								);
-							}
-						}
-					/>
+						getData={ routeProps => (
+							UserActions.getUser(
+								{ userId: parseInt(routeProps.match.params.userId) },
+								this.props.users
+							)
+						) }
+						propName="user"
+					><UserLayout /></DataRoute>
 
 					{/* --- Node Detail View --- */}
-					<Route
+					<DataRoute
 						path="/node/:nodeId"
-						render={
-							routeProps => {
-								return (
-									<Node {...this.props} {...routeProps.match.params} />
-								);
-							}
-						}
-					/>
+						getData={ routeProps => (
+							NodeActions.getNode(
+								{ nodeId: parseInt(routeProps.match.params.nodeId) },
+								this.props.nodes
+							)
+						) }
+						propName="node"
+					><Node /></DataRoute>
 				</div>
 			</BrowserRouter>
 		) : (
