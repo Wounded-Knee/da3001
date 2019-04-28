@@ -1,11 +1,11 @@
+import './App.css';
 import React, { Component } from 'react';
 import { BrowserRouter, NavLink, Route } from 'react-router-dom';
 //import { UserFace } from './User.js';
-import UserLayout from './UserLayout.js';
-import UserList from './UserList.js';
-import UserActions from './data/UserActions';
-import NodeActions from './data/NodeActions';
-import './App.css';
+import UserLayout from './UserLayout';
+import UserList from './UserList';
+import UserActions from './data/user/UserActions';
+import NodeActions from './data/node/NodeActions';
 import Node from './Node';
 
 const DataRoute = ({ path, getData, propName, children }) => (

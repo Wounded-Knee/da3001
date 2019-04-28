@@ -1,6 +1,6 @@
 import UserActionTypes from './UserActionTypes';
-import Dispatcher from './Dispatcher';
-import act from './act';
+import Dispatcher from '../Dispatcher';
+import act from '../act';
 
 const Actions = {
 	getAllUsers(store, params) {

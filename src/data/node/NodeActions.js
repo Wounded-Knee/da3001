@@ -1,6 +1,6 @@
 import NodeActionTypes from './NodeActionTypes';
-import Dispatcher from './Dispatcher';
-import act from './act';
+import Dispatcher from '../Dispatcher';
+import act from '../act';
 
 const Actions = {
 	getNode(store, params) {

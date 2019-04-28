@@ -1,7 +1,6 @@
-import Immutable from 'immutable';
 import {ReduceStore} from 'flux/utils';
 import UserActionTypes from './UserActionTypes';
-import Dispatcher from './Dispatcher';
+import Dispatcher from '../Dispatcher';
 
 class UserStore extends ReduceStore {
   constructor() {
@@ -9,7 +8,7 @@ class UserStore extends ReduceStore {
   }
 
   getInitialState() {
-    return Immutable.OrderedMap();
+    return [];
   }
 
   reduce(state, action) {

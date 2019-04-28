@@ -1,6 +1,6 @@
 import {ReduceStore} from 'flux/utils';
 import NodeActionTypes from './NodeActionTypes';
-import Dispatcher from './Dispatcher';
+import Dispatcher from '../Dispatcher';
 
 const CHANGE_EVENT = 'change';
 
