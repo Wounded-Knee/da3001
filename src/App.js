@@ -26,11 +26,21 @@ const DataRoute = ({ path, getData, propName, children }) => (
 
 class App extends Component {
 	componentWillMount() {
-		UserActions.getMe();
+		UserActions.getMe({}, this.props.users);
 	}
 
 	render() {
 		const me = this.props.users.filter(user => user.me)[0];
+		const globalProps = {
+			me: me,
+		};
+		const {
+			users,
+			nodes,
+		} = this.props;
+		const userListViewGetData = rp => UserActions.getAllUsers(users);
+		const userDetailViewGetData = rp => UserActions.getUser(users, { userId: parseInt(rp.match.params.userId) });
+		const nodeDetailViewGetData = rp => NodeActions.getNode(nodes, { nodeId: parseInt(rp.match.params.nodeId) });
 
 		return me ? (
 			<BrowserRouter>
@@ -39,7 +49,7 @@ class App extends Component {
 						<div>
 							{/* --- Navigation --- */}
 							<ul id="nav">
-								<li><NavLink activeClassName="active" to="/user/{ me.id }">Ego</NavLink></li>
+								<li><NavLink activeClassName="active" to={ `/user/${me.id}` }>Ego</NavLink></li>
 								<li><NavLink activeClassName="active" to="/users">Users</NavLink></li>
 								<li><NavLink activeClassName="active" to="/node/1" exact>Node #1</NavLink></li>
 							</ul>
@@ -47,40 +57,19 @@ class App extends Component {
 					</header>
 
 					{/* --- User List View --- */}
-					<DataRoute
-						path="/users"
-						getData={ routeProps => (
-							UserActions.getAllUsers(
-								{ },
-								this.props.users
-							)
-						) }
-						propName="users"
-					><UserList /></DataRoute>
+					<DataRoute propName="users" path="/users" getData={ userListViewGetData }>
+						<UserList {...globalProps} />
+					</DataRoute>
 
 					{/* --- User Detail View --- */}
-					<DataRoute
-						path="/user/:userId"
-						getData={ routeProps => (
-							UserActions.getUser(
-								{ userId: parseInt(routeProps.match.params.userId) },
-								this.props.users
-							)
-						) }
-						propName="user"
-					><UserLayout /></DataRoute>
+					<DataRoute propName="user" path="/user/:userId" getData={ userDetailViewGetData }>
+						<UserLayout {...globalProps} />
+					</DataRoute>
 
 					{/* --- Node Detail View --- */}
-					<DataRoute
-						path="/node/:nodeId"
-						getData={ routeProps => (
-							NodeActions.getNode(
-								{ nodeId: parseInt(routeProps.match.params.nodeId) },
-								this.props.nodes
-							)
-						) }
-						propName="node"
-					><Node /></DataRoute>
+					<DataRoute propName="node" path="/node/:nodeId" getData={ nodeDetailViewGetData }>
+						<Node {...globalProps} />
+					</DataRoute>
 				</div>
 			</BrowserRouter>
 		) : (

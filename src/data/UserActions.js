@@ -1,10 +1,9 @@
 import UserActionTypes from './UserActionTypes';
 import Dispatcher from './Dispatcher';
-import AJAX from './AJAX';
 import act from './act';
 
 const Actions = {
-	getAllUsers(params, store) {
+	getAllUsers(store, params) {
 		return act({
 			store: store,
 			params: params,
@@ -22,26 +21,41 @@ const Actions = {
 		});
 	},
 
-	getMe() {
-		Dispatcher.dispatch({
-			type: UserActionTypes.REQUEST_ME,
+	getMe(store, params) {
+		return act({
+			store: store,
+			params: params,
+			extractor: (store, params, response) => {
+				if (response) return response.data;
+				if (store instanceof Array) {
+					return store.filter(user => !!user.me)[0] || false;
+				}
+				return false;
+			},
+			xhr: {
+				method: 'get',
+				endpoint: `/user/me`,
+				onSuccess: response => {
+					Dispatcher.dispatch({
+						type: UserActionTypes.RECEIVE_ME,
+						users: response.data,
+					});
+				}
+			}
 		});
-
-		AJAX('get', '/user/me').then(response => {
-			Dispatcher.dispatch({
-				type: UserActionTypes.RECEIVE_ME,
-				me: response.data,
-			});
-		})
 	},
 
-	getUser(params, store) {
+	getUser(store, params) {
 		const { userId } = params;
 		return act({
 			store: store,
 			params: params,
 			extractor: (store, params, response) => {
-				return response ? response.data : (store.filter(user => user.id === params.userId)[0] || false);
+				if (response) return response.data;
+				if (store instanceof Array) {
+					return store.filter(user => user.id === params.userId)[0] || false;
+				}
+				return false;
 			},
 			xhr: {
 				method: 'get',

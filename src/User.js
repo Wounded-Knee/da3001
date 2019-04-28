@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import Relations from './Relations';
 
-var className = 'user';
+const className = 'user';
 
 const UserCard = (props) => {
 	return <User {...props} className="card no-tags" />;
@@ -23,9 +23,14 @@ const User = (props) => {
 	const { me, user, privacySelector, relations } = props;
 	const { id, avatar, name, privacyLevel } = user;
 	const thisIsMe = me && id === me.id;
+	const classNames = [
+		className,
+		props.className,
+		thisIsMe ? 'me' : '',
+	].join(' ');
 
 	return (
-		<div {...props} className={ props.className + ' ' + className + ' full' }>
+		<div className={ classNames }>
 
 			{ !thisIsMe && privacySelector ?
 				<PrivacySelector
